@@ -1,98 +1,215 @@
-.admin-dashboard {
-  padding: 20px;
+/* Announcements.css */
+
+/* General Container */
+.announcement-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fffbf1; /* Light cheerful background */
   font-family: Arial, sans-serif;
 }
 
-.admin-h2 {
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.admin-employee-selection {
-  margin-bottom: 20px;
+.announcement-user-info {
+  text-align: right;
 }
 
-.admin-assign-button {
-  background-color: #4CAF50; /* Green */
+.announcement-logout-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #f44336; /* Red for logout */
   color: white;
-  padding: 10px 15px;
   border: none;
   cursor: pointer;
-  margin-bottom: 20px;
-}
-
-.admin-assign-button:hover {
-  background-color: #45a049; /* Darker green on hover */
-}
-
-.admin-report-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.admin-report-item {
-  border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 15px;
-  position: relative; /* Make it a positioned parent for the checkbox */
 }
 
-.admin-report-checkbox {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  transform: scale(1.2); /* Optional: make the checkbox larger */
+.announcement-logout-button:hover {
+  background-color: #d32f2f; /* Darker red on hover */
 }
 
 
-.admin-report-item {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 15px;
-  position: relative;
+/* Title */
+.announcement-title {
+  font-size: 2.5rem;
+  color: #ff6f61; /* Cheerful color */
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.admin-description-box {
-  max-height: 100px; /* Limit height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #0c0c0c; /* Optional border */
-  padding: 5px;
-  margin-top: 5px;
+/* Form Section */
+.announcement-form-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.admin-selected {
-  border: 2px solid #007BFF; /* Highlight selected reports */
-}
-
-.admin-not-assigned-pending {
-  background-color: #ffebee; /* Light red for unassigned pending */
-}
-
-.admin-assigned-pending {
-  background-color: #ffe0b2; /* Light orange for assigned pending */
-}
-
-.admin-assigned-in-progress {
-  background-color: #fff9c4; /* Light yellow for assigned in-progress */
-}
-
-.admin-assigned-completed {
-  background-color: #c8e6c9; /* Light green for assigned completed */
-}
-
-.admin-unauthorized-message {
+.announcement-form-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
-.admin-redirect-button {
-  background-color: #f44336; /* Red */
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
+.announcement-form-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.admin-redirect-button:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+.announcement-input,
+.announcement-select,
+.announcement-date-input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+
+.announcement-input:focus,
+.announcement-select:focus,
+.announcement-date-input:focus {
+  border-color: #ff6f61; /* Highlight on focus */
+}
+
+.announcement-textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  min-height: 100px;
+}
+
+.announcement-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.announcement-submit-button,
+.announcement-cancel-button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.announcement-submit-button {
+  background-color: #28a745; /* Green for create/update */
+  color: #fff;
+}
+
+.announcement-cancel-button {
+  background-color: #ff8c00; /* Orange for cancel */
+  color: #fff;
+}
+
+.announcement-submit-button:hover,
+.announcement-cancel-button:hover {
+  transform: scale(1.05); /* Scale on hover for interaction feedback */
+}
+
+/* Notifications */
+.announcement-error,
+.announcement-success {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.announcement-error {
+  color: #d9534f; /* Error color */
+}
+
+.announcement-success {
+  color: #5cb85c; /* Success color */
+}
+
+/* Announcement List */
+.announcement-list {
+  list-style: none;
+  padding: 0;
+}
+
+.announcement-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.announcement-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.announcement-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.announcement-card-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.announcement-card-type {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.announcement-card-dates p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.announcement-card-content {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.announcement-card-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.announcement-edit-button,
+.announcement-delete-button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.announcement-edit-button {
+  background-color: #28a745; /* Green for edit */
+  color: #fff;
+}
+
+.announcement-delete-button {
+  background-color: #dc3545; /* Red for delete */
+  color: #fff;
+}
+
+.announcement-edit-button:hover,
+.announcement-delete-button:hover {
+  transform: scale(1.05); /* Scale on hover */
 }

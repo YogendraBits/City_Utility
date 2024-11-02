@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import './AdminDashboard.css'; 
 
 const AdminDashboard = () => {
-  const { user } = useAuth(); 
+  const { user, logout } = useAuth(); 
   const [reports, setReports] = useState([]); 
   const [employees, setEmployees] = useState([]); 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(''); 
@@ -16,10 +16,6 @@ const AdminDashboard = () => {
     const fetchReports = async () => {
       try {
         const data = await getAllReports(); 
-        console.log('Fetched reports data:', data); 
-        data.forEach(report => {
-          console.log('Report Details:', report);
-        });
         setReports(data);
       } catch (error) {
         console.error('Error fetching reports:', error);
@@ -29,7 +25,6 @@ const AdminDashboard = () => {
     const fetchEmployees = async () => {
       try {
         const data = await getEmployees();
-        console.log('Fetched employees data:', data); 
         setEmployees(data);
       } catch (error) {
         console.error('Error fetching employees:', error);
@@ -93,29 +88,45 @@ const AdminDashboard = () => {
           history.push('/employee');
           break;
         case 'citizen':
-        default:
           history.push('/');
           break;
+        default:
+          history.push('/');
       }
-    }
+    } else {
+      // If no user is found, redirect to login
+      history.push('/login');
+    }    
   };
 
+  // Sort reports by status
   const sortedReports = reports.sort((a, b) => {
     const statusOrder = { pending: 1, 'in-progress': 2, completed: 3 };
     return statusOrder[a.status] - statusOrder[b.status];
   });
 
   return (
-    <div className="admin-dashboard">
-      <h2 className="admin-h2">Admin Dashboard</h2>
+    <div className="AdminDashboard-container">
+      <header className="AdminDashboard-header">
+        <h2 className="AdminDashboard-title">Admin Dashboard</h2>
+        {user && (
+          <div className="AdminDashboard-user-info">
+            <p><strong>Name:</strong> {user.name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <button className="AdminDashboard-logout-button" onClick={logout}>Logout</button>
+          </div>
+        )}
+      </header>
+
       {user && user.role === 'admin' ? (
         <>
-          <div className="admin-employee-selection">
+          <div className="AdminDashboard-employee-selection">
             <label htmlFor="employee-select">Assign to Employee:</label>
             <select
               id="employee-select"
               onChange={(e) => setSelectedEmployeeId(e.target.value)}
               value={selectedEmployeeId}
+              className="AdminDashboard-select"
             >
               <option value="">Select Employee</option>
               {employees.map(employee => (
@@ -124,43 +135,42 @@ const AdminDashboard = () => {
                 </option>
               ))}
             </select>
+            <button className="AdminDashboard-assign-button" onClick={handleAssignReport}>
+              Assign Selected Reports
+            </button>
           </div>
 
-          <button className="admin-assign-button" onClick={handleAssignReport}>
-            Assign Selected Reports
-          </button>
-
-          <h3>Reported Utility Issues</h3>
-          <div className="admin-report-grid">
+          <h3 className="AdminDashboard-reports-title">Reported Utility Issues</h3>
+          <div className="AdminDashboard-report-grid">
             {sortedReports.map(report => {
               let statusClass = '';
               if (!report.assignedEmployee && report.status === 'pending') {
-                statusClass = 'admin-not-assigned-pending'; 
+                statusClass = 'AdminDashboard-not-assigned-pending'; 
               } else if (report.assignedEmployee && report.status === 'pending') {
-                statusClass = 'admin-assigned-pending'; 
+                statusClass = 'AdminDashboard-assigned-pending'; 
               } else if (report.assignedEmployee && report.status === 'in-progress') {
-                statusClass = 'admin-assigned-in-progress'; 
+                statusClass = 'AdminDashboard-assigned-in-progress'; 
               } else if (report.assignedEmployee && report.status === 'completed') {
-                statusClass = 'admin-assigned-completed'; 
+                statusClass = 'AdminDashboard-assigned-completed'; 
               }
 
               if (selectedReportIds.includes(report._id)) {
-                statusClass += ' admin-selected'; 
+                statusClass += ' AdminDashboard-selected'; 
               }
 
               return (
-                <div key={report._id} className={`admin-report-item ${statusClass}`}>
+                <div key={report._id} className={`AdminDashboard-report-item ${statusClass}`}>
                   <input
                     type="checkbox"
                     checked={selectedReportIds.includes(report._id)}
                     onChange={() => handleReportSelection(report._id)}
-                    className="admin-report-checkbox" /* Apply the new class */
+                    className="AdminDashboard-report-checkbox"
                   />
-                  <div className="report-info">
+                  <div className="AdminDashboard-report-info">
                     <strong>Type:</strong> {report.type} <br />
                     <strong>Status:</strong> <span>{report.status}</span><br />
                     <strong>Description:</strong>
-                    <div className="admin-description-box">
+                    <div className="AdminDashboard-description-box">
                       {report.description}
                     </div>
                     <strong>Assigned to:</strong> 
@@ -186,10 +196,10 @@ const AdminDashboard = () => {
           </div>
         </>
       ) : (
-        <div className="admin-unauthorized-message">
+        <div className="AdminDashboard-unauthorized-message">
           <p>You do not have permission to view this dashboard.</p>
-          <button className="admin-redirect-button" onClick={handleRedirect}>
-            Go to Home
+          <button className="AdminDashboard-redirect-button" onClick={handleRedirect}>
+            Leave
           </button>
         </div>
       )}

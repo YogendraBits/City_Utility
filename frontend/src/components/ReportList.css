@@ -1,62 +1,124 @@
-.report-list {
-  max-width: 1200px; /* Limit max width for better readability */
+/* ReportList.css */
+
+.reportlist {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.report-list h2 {
+.reportlist-title {
   text-align: center;
+  color: #333;
   margin-bottom: 20px;
 }
 
-.report-grid {
+.reportlist-loading, .reportlist-error, .reportlist-no-reports {
+  text-align: center;
+  color: #666;
+  margin: 10px 0;
+}
+
+.reportlist-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
-  gap: 20px; /* Space between report items */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
-.report-item {
-  border: 1px solid #ddd; /* Light border around report item */
-  border-radius: 8px;
+.reportlist-item {
+  background-color: #fff;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px;
   padding: 15px;
-  background-color: #f9f9f9; /* Light background for report items */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.report-header {
+  transition: transform 0.2s;
   display: flex;
-  justify-content: space-between; /* Align type and status */
-  margin-bottom: 10px; /* Space below header */
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.report-description {
-  margin-bottom: 10px; /* Space below description */
+.reportlist-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.description-box {
-  max-height: 100px; /* Limit height for the description */
-  overflow-y: auto; /* Scrollable box for overflow */
-  border: 1px solid #ccc; /* Light border for the description box */
+/* Status color coding */
+.reportlist-status-pending {
+  border-left: 5px solid #ffc107; /* Yellow for pending */
+}
+
+.reportlist-status-in-progress {
+  border-left: 5px solid #17a2b8; /* Teal for in-progress */
+}
+
+.reportlist-status-completed {
+  border-left: 5px solid #28a745; /* Green for completed */
+}
+
+.reportlist-header {
+  margin-bottom: 10px;
+}
+
+.reportlist-type-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reportlist-location {
+  margin-top: 10px;
+}
+
+.reportlist-location ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.reportlist-location li {
+  margin: 5px 0;
+}
+
+.reportlist-description {
+  margin: 10px 0;
+}
+
+.reportlist-description-box {
+  background-color: #f1f1f1;
+  padding: 10px;
   border-radius: 4px;
-  padding: 10px; /* Padding inside the description box */
-  background-color: #fff; /* White background for contrast */
+  max-height: 100px; /* Set max height for scrollable box */
+  overflow-y: auto; /* Enable vertical scrolling */
+  font-size: 14px; /* Adjust font size if necessary */
 }
 
-.report-location ul {
-  list-style-type: none; /* Remove default bullet points */
-  padding: 0; /* Remove default padding */
+.reportlist-delete-button {
+  background-color: #c05862;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px; /* Add margin for spacing */
 }
 
-.report-location li {
-  margin-bottom: 5px; /* Space between list items */
+.reportlist-delete-button:hover {
+  background-color: #c82333;
 }
 
-.report-item {
-  position: relative; /* Allows positioning of the button */
+.reportlist-login-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: rgb(15, 15, 15);
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 20px;
 }
 
-.btn-danger {
-  position: absolute;
-  bottom: 10px; /* Position at the bottom of the report item */
-  right: 10px;  /* Position on the right */
+.reportlist-login-button:hover {
+  background-color: #0056b3;
 }

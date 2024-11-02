@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { getAssignedReports, updateReportStatus } from '../api';
 import { useAuth } from '../context/AuthContext';
-import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
-import './EmployeeDashboard.css'; // Import CSS for styles
+import { useHistory } from 'react-router-dom';
+import './EmployeeDashboard.css';
 
 const EmployeeDashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [reports, setReports] = useState([]);
   const [error, setError] = useState('');
-  const history = useHistory(); // Initialize history for redirection
+  const history = useHistory();
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const data = await getAssignedReports(); // Fetch reports assigned to the logged-in user
+        const data = await getAssignedReports();
         setReports(data);
       } catch (err) {
         console.error('Error fetching assigned reports:', err);
@@ -46,14 +46,18 @@ const EmployeeDashboard = () => {
           history.push('/admin');
           break;
         case 'employee':
-          // Already on the employee dashboard
+          history.push('/employee');
           break;
         case 'citizen':
-        default:
           history.push('/');
           break;
+        default:
+          history.push('/');
       }
-    }
+    } else {
+      // If no user is found, redirect to login
+      history.push('/login');
+    }    
   };
 
   // Check for employee role and render accordingly
@@ -62,44 +66,70 @@ const EmployeeDashboard = () => {
       <div className="emp-access-denied">
         <p>Access Denied: This page is for employees only.</p>
         <button className="emp-redirect-button" onClick={handleRedirect}>
-          Go to Home
+          Leave
         </button>
       </div>
     );
   }
 
+  // Sort reports by status
+  const statusOrder = {
+    pending: 1,
+    'in-progress': 2,
+    completed: 3,
+  };
+
+  const sortedReports = [...reports].sort((a, b) => {
+    return (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
+  });
+
   return (
     <div className="emp-employee-dashboard">
-      <h2>Employee Dashboard</h2>
-      <div className="emp-user-info">
-        <h3>User Information</h3>
-        <p><strong>Name:</strong> {user.name}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Role:</strong> {user.role}</p>
-      </div>
+      <header className="emp-header">
+        <h2>Employee Dashboard</h2>
+        <div className="emp-user-info">
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <button className="emp-logout-button" onClick={logout}>Logout</button>
+        </div>
+      </header>
 
       {error && <p className="emp-error-message">{error}</p>}
-      {reports.length === 0 ? (
+      {sortedReports.length === 0 ? (
         <p>No reports assigned to you.</p>
       ) : (
         <ul className="emp-report-list">
-          {reports.map((report) => (
-            <li key={report._id} className="emp-report-item">
+          {sortedReports.map((report) => (
+            <li key={report._id} className={`emp-report-item emp-status-${report.status}`}>
               <div className="emp-report-info">
                 <strong>Type:</strong> {report.type} <br />
+                <strong>Status:</strong> {report.status} <br />
+                <div className="emp-address-info">
+                  <strong>Address:</strong> {report.location?.address} <br />
+                  <strong>Postal Code:</strong> {report.location?.postalCode} <br />
+                  <strong>Coordinates:</strong> [{report.location?.coordinates?.join(', ')}]
+                </div>
                 <div className="emp-description-box">
                   <strong>Description:</strong> <br />
                   {report.description}
                 </div>
-                <strong>Status:</strong> {report.status} <br />
               </div>
               <div className="emp-report-actions">
-                <button onClick={() => handleStatusChange(report._id, 'in-progress')} className="emp-status-button">
-                  Mark In Progress
-                </button>
-                <button onClick={() => handleStatusChange(report._id, 'completed')} className="emp-status-button">
-                  Mark Completed
-                </button>
+                {report.status === 'pending' && (
+                  <>
+                    <button onClick={() => handleStatusChange(report._id, 'in-progress')} className="emp-status-button">
+                      Mark In Progress
+                    </button>
+                    <button onClick={() => handleStatusChange(report._id, 'completed')} className="emp-status-button">
+                      Mark Completed
+                    </button>
+                  </>
+                )}
+                {report.status === 'in-progress' && (
+                  <button onClick={() => handleStatusChange(report._id, 'completed')} className="emp-status-button">
+                    Mark Completed
+                  </button>
+                )}
               </div>
             </li>
           ))}

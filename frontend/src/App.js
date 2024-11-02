@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Register from './components/Register';
 import Login from './components/Login';
 import Home from './pages/Home';
+import AdminHome from './pages/AdminHome';
 import AdminDashboard from './pages/AdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import Announcements from './pages/Announcements';
@@ -18,6 +19,7 @@ const AppRoutes = () => {
       <Route path="/register" component={Register} />
       <Route path="/login" component={Login} />
       <Route path="/" component={Home} exact />
+      <Route path="/AdminHome" component={AdminHome} exact />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/employee" component={EmployeeDashboard} />
       <Route path="/announcements" component={Announcements} />

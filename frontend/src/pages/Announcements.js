@@ -1,11 +1,10 @@
-// src/pages/Announcements.js
 import React, { useEffect, useState } from 'react';
 import { fetchAnnouncements, createAnnouncement, updateAnnouncement, deleteAnnouncement } from '../api';
 import { useAuth } from '../context/AuthContext';
-import './Announcements.css'; // Ensure you create a CSS file for styles
+import './Announcements.css'; // Ensure your CSS file has styles for the layout
 
 const Announcements = () => {
-  const { user, token } = useAuth(); // Access user role and token for authorization
+  const { user, token, logout } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -14,7 +13,7 @@ const Announcements = () => {
     startDate: '',
     endDate: '',
   });
-  const [editingId, setEditingId] = useState(null); // State to track editing
+  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -38,15 +37,13 @@ const Announcements = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        // Update announcement if editingId is set
         const updatedAnnouncement = await updateAnnouncement(editingId, formData, token);
         setAnnouncements(announcements.map(ann => (ann._id === editingId ? updatedAnnouncement : ann)));
-        setSuccess('Announcement updated successfully');
+        setSuccess('Announcement updated successfully!');
       } else {
-        // Create a new announcement
         const newAnnouncement = await createAnnouncement(formData, token);
         setAnnouncements([...announcements, newAnnouncement]);
-        setSuccess('Announcement created successfully');
+        setSuccess('Announcement created successfully!');
       }
       resetForm();
     } catch (err) {
@@ -71,7 +68,7 @@ const Announcements = () => {
     try {
       await deleteAnnouncement(id, token);
       setAnnouncements(announcements.filter(ann => ann._id !== id));
-      setSuccess('Announcement deleted successfully');
+      setSuccess('Announcement deleted successfully!');
     } catch (err) {
       setError('Failed to delete announcement');
     }
@@ -83,14 +80,23 @@ const Announcements = () => {
   };
 
   return (
-    <div className="ann-container">
-      <h2 className="ann-title">Public Announcements</h2>
+    <div className="announcement-container">
+      <header className="announcement-header">
+        <h2 className="announcement-title">🎉 Public Announcements 🎉</h2>
+        {user && (
+          <div className="announcement-user-info">
+            <p><strong>Name:</strong> {user.name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+            <button className="announcement-logout-button" onClick={logout}>Logout</button>
+          </div>
+        )}
+      </header>
 
       {user?.role === 'admin' && (
-        <div className="ann-form-container">
-          <h3 className="ann-form-title">{editingId ? 'Edit Announcement' : 'Create New Announcement'}</h3>
-          <form className="ann-form" onSubmit={handleSubmit}>
-            <div className="ann-form-row">
+        <div className="announcement-form-container">
+          <h3 className="announcement-form-title">{editingId ? 'Edit Announcement' : 'Create New Announcement'}</h3>
+          <form className="announcement-form" onSubmit={handleSubmit}>
+            <div className="announcement-form-group">
               <input
                 type="text"
                 name="title"
@@ -98,9 +104,9 @@ const Announcements = () => {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="ann-input"
+                className="announcement-input"
               />
-              <select name="type" value={formData.type} onChange={handleChange} className="ann-select">
+              <select name="type" value={formData.type} onChange={handleChange} className="announcement-select">
                 <option value="maintenance">Maintenance</option>
                 <option value="policy">Policy</option>
                 <option value="safety">Safety</option>
@@ -112,16 +118,16 @@ const Announcements = () => {
               value={formData.content}
               onChange={handleChange}
               required
-              className="ann-textarea"
+              className="announcement-textarea"
             />
-            <div className="ann-form-row">
+            <div className="announcement-form-group">
               <input
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
                 required
-                className="ann-input-date"
+                className="announcement-date-input"
               />
               <input
                 type="date"
@@ -129,40 +135,40 @@ const Announcements = () => {
                 value={formData.endDate}
                 onChange={handleChange}
                 required
-                className="ann-input-date"
+                className="announcement-date-input"
               />
             </div>
-            <button type="submit" className="ann-submit-button">{editingId ? 'Update Announcement' : 'Create Announcement'}</button>
-            {editingId && <button type="button" className="ann-cancel-button" onClick={resetForm}>Cancel</button>}
+            <div className="announcement-form-actions">
+              <button type="submit" className="announcement-submit-button">
+                {editingId ? 'Update Announcement' : 'Create Announcement'}
+              </button>
+              {editingId && (
+                <button type="button" className="announcement-cancel-button" onClick={resetForm}>Cancel</button>
+              )}
+            </div>
           </form>
         </div>
       )}
 
-      {error && <p className="ann-error">{error}</p>}
-      {success && <p className="ann-success">{success}</p>}
+      {error && <p className="announcement-error">{error}</p>}
+      {success && <p className="announcement-success">{success}</p>}
 
-      <ul className="ann-list">
+      <ul className="announcement-list">
         {announcements.map((announcement) => (
-          <li key={announcement._id} className="ann-item">
-            <div className="ann-header">
-              <h3 className="ann-item-title">{announcement.title}</h3>
-              <p className="ann-item-type"><strong>Type:</strong> {announcement.type}</p>
+          <li key={announcement._id} className="announcement-card">
+            <div className="announcement-card-header">
+              <h3 className="announcement-card-title">{announcement.title}</h3>
+              <p className="announcement-card-type"><strong>Type:</strong> {announcement.type}</p>
             </div>
-            <div className="ann-dates">
-              <p className="ann-item-date"><strong>Effective from:</strong> {new Date(announcement.startDate).toLocaleDateString()}</p>
-              <p className="ann-item-date"><strong>Until:</strong> {new Date(announcement.endDate).toLocaleDateString()}</p>
+            <div className="announcement-card-dates">
+              <p><strong>Effective from:</strong> {new Date(announcement.startDate).toLocaleDateString()}</p>
+              <p><strong>Until:</strong> {new Date(announcement.endDate).toLocaleDateString()}</p>
             </div>
-            <div className="ann-description-container">
-              <textarea
-                className="ann-description"
-                readOnly
-                value={announcement.content}
-              />
-            </div>
+            <p className="announcement-card-content">{announcement.content}</p>
             {user?.role === 'admin' && (
-              <div className="ann-item-actions">
-                <button className="ann-edit-button" onClick={() => handleEdit(announcement)}>Edit</button>
-                <button className="ann-delete-button" onClick={() => handleDelete(announcement._id)}>Delete</button>
+              <div className="announcement-card-actions">
+                <button className="announcement-edit-button" onClick={() => handleEdit(announcement)}>Edit</button>
+                <button className="announcement-delete-button" onClick={() => handleDelete(announcement._id)}>Delete</button>
               </div>
             )}
           </li>

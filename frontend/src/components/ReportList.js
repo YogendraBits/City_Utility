@@ -1,3 +1,4 @@
+// src/pages/ReportList.js
 import React, { useEffect, useState } from 'react';
 import { getReports, deleteReport } from '../api'; // Ensure deleteReport is imported
 import { useAuth } from '../context/AuthContext';
@@ -13,9 +14,9 @@ const ReportList = () => {
   // User role check
   if (!user || user.role !== 'citizen') {
     return (
-      <div className="container mt-5">
+      <div className="reportlist-container mt-5">
         <p>You do not have permission to view this page. Please log in as a citizen.</p>
-        <Link to="/login" className="btn btn-primary">Login</Link>
+        <Link to="/login" className="reportlist-login-button">Login</Link>
       </div>
     );
   }
@@ -58,36 +59,43 @@ const ReportList = () => {
     }
   };
 
+  // Function to sort reports by status
+  const sortedReports = reports.sort((a, b) => {
+    const statusOrder = { pending: 1, 'in-progress': 2, completed: 3 };
+    return statusOrder[a.status] - statusOrder[b.status];
+  });
+
   return (
-    <div className="report-list">
-      <h2>Reported Utility Issues</h2>
-      {loading && <p>Loading reports...</p>}
-      {error && <p className="error">{error}</p>}
-      {reports.length === 0 && !loading && <p>No reports available.</p>}
-      <div className="report-grid">
-        {reports.map((report) => (
-          <div key={report._id} className="report-item">
-            <div className="report-header">
-              <strong>Type:</strong> {report.type}
-              <span className="report-status">Status: {report.status}</span>
+    <div className="reportlist">
+      <h2 className="reportlist-title">Reported Utility Issues</h2>
+      {loading && <p className="reportlist-loading">Loading reports...</p>}
+      {error && <p className="reportlist-error">{error}</p>}
+      {reports.length === 0 && !loading && <p className="reportlist-no-reports">No reports available.</p>}
+      <div className="reportlist-grid">
+        {sortedReports.map((report) => (
+          <div key={report._id} className={`reportlist-item reportlist-status-${report.status}`}>
+            <div className="reportlist-header">
+              <div className="reportlist-type-status">
+                <strong>Type:</strong> {report.type} <span className={`reportlist-status reportlist-status-${report.status}`}>Status: {report.status}</span>
+              </div>
+              <div className="reportlist-location">
+                <strong>Location:</strong>
+                <ul>
+                  <li><strong>Address:</strong> {report.location?.address || 'N/A'}</li>
+                  <li><strong>City:</strong> {report.location?.city || 'N/A'}</li>
+                  <li><strong>Country:</strong> {report.location?.country || 'N/A'}</li>
+                  <li><strong>Postal Code:</strong> {report.location?.postalCode || 'N/A'}</li>
+                  <li><strong>Coordinates:</strong> {report.location?.coordinates ? report.location.coordinates.join(', ') : 'N/A'}</li>
+                </ul>
+              </div>
             </div>
-            <div className="report-description">
+            <div className="reportlist-description">
               <strong>Description:</strong>
-              <div className="description-box">
+              <div className="reportlist-description-box">
                 {report.description}
               </div>
             </div>
-            <div className="report-location">
-              <strong>Location:</strong>
-              <ul>
-                <li><strong>Address:</strong> {report.location?.address || 'N/A'}</li>
-                <li><strong>City:</strong> {report.location?.city || 'N/A'}</li>
-                <li><strong>Postal Code:</strong> {report.location?.postalCode || 'N/A'}</li>
-                <li><strong>Country:</strong> {report.location?.country || 'N/A'}</li>
-                <li><strong>Coordinates:</strong> {report.location?.coordinates ? report.location.coordinates.join(', ') : 'N/A'}</li>
-              </ul>
-            </div>
-            <button className="btn btn-danger" onClick={() => handleDeleteReport(report._id)}>
+            <button className="reportlist-delete-button" onClick={() => handleDeleteReport(report._id)}>
               Delete
             </button>
           </div>

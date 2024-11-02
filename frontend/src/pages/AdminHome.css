@@ -1,0 +1,144 @@
+/* AdminHome.css */
+
+/* General Container */
+.AdminHome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Header Styling */
+  .AdminHome-header {
+    width: 100%;
+    background-color: #2d3e50;
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .AdminHome-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .AdminHome-profile {
+    position: relative;
+  }
+  
+  .AdminHome-profile-btn {
+    background-color: #4a5a72;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+  
+  /* Dropdown Menu */
+  .AdminHome-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .AdminHome-dropdown-item {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .AdminHome-dropdown-item:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* Welcome Message */
+  .AdminHome-welcome-message {
+    margin: 2rem 0;
+    text-align: center;
+    color: #4a5a72;
+    font-size: 1.1rem;
+  }
+  
+  /* Tiles Container */
+  .AdminHome-tile-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  /* Tiles */
+  .AdminHome-tile {
+    background-color: #ffffff;
+    width: 280px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .AdminHome-tile:hover {
+    transform: translateY(-5px);
+  }
+  
+  .AdminHome-tile h2 {
+    font-size: 1.5rem;
+    color: #2d3e50;
+    margin-bottom: 1rem;
+  }
+  
+  .AdminHome-tile p {
+    color: #6b7c8b;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Buttons */
+  .AdminHome-btn-primary, .AdminHome-btn-secondary {
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .AdminHome-btn-primary {
+    background-color: #4a5a72;
+    color: #fff;
+    border: none;
+  }
+  
+  .AdminHome-btn-secondary {
+    background-color: #f4f6f9;
+    color: #4a5a72;
+    border: 1px solid #4a5a72;
+  }
+  
+  .AdminHome-btn-primary:hover, .AdminHome-btn-secondary:hover {
+    background-color: #2d3e50;
+    color: #fff;
+  }
+  

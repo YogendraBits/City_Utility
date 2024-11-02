@@ -27,7 +27,7 @@ const Login = () => {
           history.push('/employee');
           break;
         case 'admin':
-          history.push('/admin');
+          history.push('/AdminHome');
           break;
         case 'citizen':
         default:
