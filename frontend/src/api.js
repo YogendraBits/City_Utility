@@ -186,3 +186,17 @@ export const deleteAnnouncement = async (announcementId, token) => {
   );
   return response.data;
 };
+
+
+export const sendEmail = async ({ to, subject, data }) => {
+  try {
+    const response = await axios.post('http://localhost:5005/send-email', {
+      to,
+      subject,
+      data
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error('Error sending email: ' + error.message);
+  }
+};

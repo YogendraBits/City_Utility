@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllReports, getEmployees, assignReportToEmployee } from '../api';
+import { getAllReports, getEmployees, assignReportToEmployee, sendEmail } from '../api';
 import { useAuth } from '../context/AuthContext'; 
 import { useHistory } from 'react-router-dom'; 
 import './AdminDashboard.css'; 
@@ -10,6 +10,7 @@ const AdminDashboard = () => {
   const [employees, setEmployees] = useState([]); 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(''); 
   const [selectedReportIds, setSelectedReportIds] = useState([]); 
+  const [sendEmailOption, setSendEmailOption] = useState(false); // Renamed state for email option
   const history = useHistory(); 
 
   useEffect(() => {
@@ -58,33 +59,44 @@ const AdminDashboard = () => {
     }
     
     try {
-      // Update the reports locally
+      const selectedEmployee = employees.find(emp => emp._id === selectedEmployeeId);
+      if (!selectedEmployee) {
+        console.error('Selected employee not found');
+        return;
+      }
+
       const updatedReports = reports.map(report => {
         if (selectedReportIds.includes(report._id)) {
           return {
             ...report,
-            assignedEmployee: selectedEmployeeId, // Assign employee ID
+            assignedEmployee: selectedEmployeeId,
           };
         }
         return report;
       });
 
-      // Set the updated reports immediately
       setReports(updatedReports);
 
-      // Call API to assign reports
       for (const reportId of selectedReportIds) {
         await assignReportToEmployee(reportId, selectedEmployeeId);
       }
 
-      // Clear selections after assignment
+      // Send email notification if the option is selected
+      if (sendEmailOption) {
+        await sendEmail({
+          to: selectedEmployee.email,
+          subject: 'Report Assignment Notification',
+          data: `You have been assigned new reports. Report IDs: ${selectedReportIds.join(', ')}`
+        });
+      }
+
       setSelectedReportIds([]);
       setSelectedEmployeeId('');
     } catch (error) {
       console.error('Error assigning report:', error);
     }
   };
-
+  
   const handleReportSelection = (reportId) => {
     setSelectedReportIds((prevSelected) => {
       if (prevSelected.includes(reportId)) {
@@ -152,6 +164,29 @@ const AdminDashboard = () => {
                 </option>
               ))}
             </select>
+
+            <div>
+              <input 
+                type="radio" 
+                id="sendEmail" 
+                name="emailOption" 
+                value="send" 
+                checked={sendEmailOption} 
+                onChange={() => setSendEmailOption(true)} 
+              />
+              <label htmlFor="sendEmail">Send Email</label>
+
+              <input 
+                type="radio" 
+                id="noEmail" 
+                name="emailOption" 
+                value="noSend" 
+                checked={!sendEmailOption} 
+                onChange={() => setSendEmailOption(false)} 
+              />
+              <label htmlFor="noEmail">Assign Without Sending Email</label>
+            </div>
+
             <button className="AdminDashboard-assign-button" onClick={handleAssignReport}>
               Assign Selected Reports
             </button>
