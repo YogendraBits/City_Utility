@@ -1,0 +1,98 @@
+.admin-dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.admin-h2 {
+  margin-bottom: 20px;
+}
+
+.admin-employee-selection {
+  margin-bottom: 20px;
+}
+
+.admin-assign-button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.admin-assign-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.admin-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.admin-report-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  position: relative; /* Make it a positioned parent for the checkbox */
+}
+
+.admin-report-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: scale(1.2); /* Optional: make the checkbox larger */
+}
+
+
+.admin-report-item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  position: relative;
+}
+
+.admin-description-box {
+  max-height: 100px; /* Limit height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #0c0c0c; /* Optional border */
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.admin-selected {
+  border: 2px solid #007BFF; /* Highlight selected reports */
+}
+
+.admin-not-assigned-pending {
+  background-color: #ffebee; /* Light red for unassigned pending */
+}
+
+.admin-assigned-pending {
+  background-color: #ffe0b2; /* Light orange for assigned pending */
+}
+
+.admin-assigned-in-progress {
+  background-color: #fff9c4; /* Light yellow for assigned in-progress */
+}
+
+.admin-assigned-completed {
+  background-color: #c8e6c9; /* Light green for assigned completed */
+}
+
+.admin-unauthorized-message {
+  text-align: center;
+}
+
+.admin-redirect-button {
+  background-color: #f44336; /* Red */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.admin-redirect-button:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}

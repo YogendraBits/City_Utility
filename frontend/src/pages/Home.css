@@ -1,0 +1,138 @@
+.home-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f4f7fa; /* Soft background for better contrast */
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .home-welcome {
+    font-size: 2em;
+    color: #007bff; /* Primary color */
+  }
+  
+  .home-profile {
+    position: relative; /* To position the dropdown */
+  }
+  
+  .home-profile-button {
+    background-color: #007bff; /* Primary color */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s;
+  }
+  
+  .home-profile-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  .home-dropdown {
+    position: absolute;
+    top: 60px; /* Position below the button */
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure dropdown appears above other elements */
+  }
+  
+  .home-dropdown-item {
+    padding: 10px 15px;
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .home-dropdown-item:hover {
+    background-color: #f1f1f1; /* Light hover effect */
+  }
+  
+  .home-welcome-message {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    font-size: 1.2em;
+    text-align: center;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .home-info-text {
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  
+  .home-tile-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .home-tile {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    flex: 1;
+    min-width: 250px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .home-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .home-tile h2 {
+    font-size: 1.5em;
+    color: #007bff; /* Primary color */
+  }
+  
+  .home-tile p {
+    font-size: 1em;
+    color: #555;
+  }
+  
+  /* Button styles with hover effects */
+  .home-btn {
+    display: inline-block; /* Ensure the button behaves like a block */
+    padding: 12px 25px; /* Increased padding */
+    border-radius: 5px; /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    color: white; /* Text color */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+    font-weight: bold; /* Bold text for emphasis */
+  }
+  
+  .home-btn.btn-secondary {
+    background-color: #6c757d; /* Secondary button color */
+  }
+  
+  .home-btn.btn-secondary:hover {
+    background-color: #5a6268; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  }
+  
