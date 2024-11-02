@@ -56,6 +56,11 @@ const AdminHome = () => {
           <p>Access the admin panel for managing reports and user settings.</p>
           <Link to="/admin" className="AdminHome-btn-secondary">Go to Admin Panel</Link>
         </div>
+        <div className="AdminHome-tile">
+          <h2>Register Employee</h2>
+          <p>Register new employees to manage the city.</p>
+          <Link to="/register_employee" className="AdminHome-btn-secondary">Register Employee</Link>
+        </div>
       </div>
     </div>
   );

@@ -67,7 +67,10 @@ const ReportList = () => {
 
   return (
     <div className="reportlist">
-      <h2 className="reportlist-title">Reported Utility Issues</h2>
+      <div className="reportlist-header">
+        <Link to="/" className="reportlist-home-button">Go Home</Link>
+        <h2 className="reportlist-title">Reported Utility Issues</h2>
+      </div>
       {loading && <p className="reportlist-loading">Loading reports...</p>}
       {error && <p className="reportlist-error">{error}</p>}
       {reports.length === 0 && !loading && <p className="reportlist-no-reports">No reports available.</p>}

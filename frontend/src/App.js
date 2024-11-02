@@ -10,6 +10,7 @@ import EmployeeDashboard from './pages/EmployeeDashboard';
 import Announcements from './pages/Announcements';
 import ReportForm from './components/ReportForm';
 import ReportList from './components/ReportList';
+import RegisterEmployee from './components/RegisterEmployee';
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ const AppRoutes = () => {
   return (
     <Switch>
       <Route path="/register" component={Register} />
+      <Route path="/register_employee" component={RegisterEmployee} />
       <Route path="/login" component={Login} />
       <Route path="/" component={Home} exact />
       <Route path="/AdminHome" component={AdminHome} exact />

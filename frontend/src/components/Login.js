@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import './Login.css'; // Import CSS for styling
 
 const Login = () => {
-  const { login } = useAuth(); // Destructure the login function from AuthContext
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const history = useHistory();
@@ -18,10 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser(formData);
-      // Use the login function from the AuthContext to set user and token
-      login(data.user, data.token); // Assuming your API returns a token
-      
-      // Redirect based on user role
+      login(data.user, data.token);
       switch (data.user.role) {
         case 'employee':
           history.push('/employee');
@@ -37,6 +34,10 @@ const Login = () => {
     } catch (err) {
       setError(err.response ? err.response.data.message : 'Login failed. Please try again.');
     }
+  };
+
+  const handleRegisterRedirect = () => {
+    history.push('/register');
   };
 
   return (
@@ -60,6 +61,10 @@ const Login = () => {
         />
         <button type="submit" className="login-button">Login</button>
       </form>
+      <p className="register-prompt">
+        Don't have an account? 
+        <button onClick={handleRegisterRedirect} className="register-button">Register</button>
+      </p>
     </div>
   );
 };

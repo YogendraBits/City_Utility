@@ -16,7 +16,7 @@
   
   .home-welcome {
     font-size: 2em;
-    color: #007bff; /* Primary color */
+    color: #212931; /* Primary color */
   }
   
   .home-profile {
@@ -108,7 +108,7 @@
   
   .home-tile h2 {
     font-size: 1.5em;
-    color: #007bff; /* Primary color */
+    color: #2d3a48; /* Primary color */
   }
   
   .home-tile p {
@@ -122,17 +122,17 @@
     padding: 12px 25px; /* Increased padding */
     border-radius: 5px; /* Rounded corners */
     text-decoration: none; /* Remove underline */
-    color: white; /* Text color */
+    color: rgb(0, 0, 0); /* Text color */
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
     font-weight: bold; /* Bold text for emphasis */
   }
   
   .home-btn.btn-secondary {
-    background-color: #6c757d; /* Secondary button color */
+    background-color: #7ab8ef; /* Secondary button color */
   }
   
   .home-btn.btn-secondary:hover {
-    background-color: #5a6268; /* Darker shade on hover */
+    background-color: #0aec2c; /* Darker shade on hover */
     transform: scale(1.05); /* Slightly enlarge on hover */
   }
   

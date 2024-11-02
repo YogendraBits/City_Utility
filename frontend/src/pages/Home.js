@@ -11,7 +11,7 @@ const Home = () => {
   if (!user || user.role !== 'citizen') {
     return (
       <div className="home-container mt-5">
-        <p>You do not have permission to view this page. Please log in as a citizen.</p>
+        <p>Please log in as a citizen.</p>
         <Link to="/login" className="home-btn btn-primary">Login</Link>
       </div>
     );

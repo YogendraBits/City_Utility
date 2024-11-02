@@ -1,0 +1,93 @@
+.RegisterEmployee-container {
+    max-width: 450px; /* Set a maximum width for the form */
+    margin: auto; /* Center the form horizontally */
+    padding: 30px; /* Add padding inside the container */
+    border-radius: 8px; /* Round the corners of the container */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    background-color: #ffffff; /* White background for the form */
+  }
+  
+  .RegisterEmployee-form {
+    display: flex;
+    flex-direction: column; /* Stack the form elements vertically */
+  }
+  
+  .RegisterEmployee-title {
+    text-align: center; /* Center the title */
+    margin-bottom: 20px; /* Space below the title */
+    font-size: 24px; /* Larger font size for title */
+    color: #333; /* Darker color for better readability */
+  }
+  
+  .RegisterEmployee-input {
+    margin-bottom: 15px; /* Space between input fields */
+    padding: 12px; /* Padding inside input fields */
+    border: 1px solid #ccc; /* Light border for input fields */
+    border-radius: 5px; /* Rounded corners for input fields */
+    font-size: 16px; /* Set font size */
+    transition: border-color 0.3s; /* Smooth transition for focus effect */
+  }
+  
+  .RegisterEmployee-input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+  }
+  
+  .RegisterEmployee-button {
+    padding: 12px; /* Padding inside the button */
+    background-color: #007bff; /* Primary color for button */
+    color: #fff; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners for button */
+    font-size: 16px; /* Set font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .RegisterEmployee-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  .RegisterEmployee-error-message {
+    color: red; /* Red color for error messages */
+    text-align: center; /* Center the error message */
+    margin-bottom: 15px; /* Space below the error message */
+  }
+  
+  /* Modal Styles */
+  .modal {
+    position: fixed; /* Fixed positioning for modal */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Ensure modal is on top */
+  }
+  
+  .modal-content {
+    background-color: white; /* Set background color to white */
+    padding: 20px; /* Add padding inside modal */
+    border-radius: 8px; /* Round the corners of the modal */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+    text-align: center; /* Center text in modal */
+  }
+  
+  .modal-content button {
+    margin: 10px; /* Add margin around buttons */
+    padding: 10px 15px; /* Add padding inside buttons */
+    background-color: #007bff; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Round corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .modal-content button:hover {
+    background-color: #0056b3; /* Darken button on hover */
+  }
+  

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { registerUser } from '../api'; // Ensure this API function is correctly implemented
-import { useAuth } from '../context/AuthContext'; // Custom AuthContext for user state management
-import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
-import Modal from './Modal'; // Import the Modal component
-import './Register.css'; // Import CSS for styling
+import { registerUser } from '../api';
+import { useAuth } from '../context/AuthContext';
+import { useHistory } from 'react-router-dom';
+import Modal from './Modal';
+import './Register.css';
 
 const Register = () => {
-  const { login } = useAuth(); // Get login from AuthContext
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'citizen' });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const history = useHistory(); // Initialize history for redirection
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const history = useHistory();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,84 +19,96 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting registration with data:', formData); // Log the data being submitted
-
-    setLoading(true); // Set loading state to true
-    setError(''); // Reset any previous errors
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await registerUser(formData); // Make API call to register user
-      console.log('Response from registerUser:', response); // Log the entire response
+      const response = await registerUser(formData);
 
-      // Check if the response has the expected structure
-      if (response.user) { // Now just check for user data
-        login(response.user, response.token || ''); // Set user and token in context, use an empty string if token is not available
-        console.log('Registration successful:', response); // Log successful registration
-
-        // Show success modal
+      if (response.user) {
+        login(response.user, response.token || '');
         setShowModal(true);
       } else {
-        throw new Error('User data not found in response'); // Handle missing user data
+        throw new Error('User data not found in response');
       }
     } catch (err) {
-      console.error('Error during registration:', err); // Log the entire error object
       if (err.response) {
-        // If there's a response from the server
-        setError(err.response.data.message); // Display the error message from the server
+        setError(err.response.data.message);
       } else {
-        // Handle network errors or other unexpected errors
         setError('An unexpected error occurred. Please try again later.');
       }
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Close the modal
-    history.push('/login'); // Redirect to the login page
+    setShowModal(false);
+    history.push('/login');
   };
 
   return (
-    <div className="register-container">
-      <form onSubmit={handleSubmit} className="register-form">
-        <h2>Register</h2>
-        {error && <p className="error-message">{error}</p>} {/* Display error in red */}
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-        />
-        <select name="role" onChange={handleChange} value={formData.role}>
-          <option value="citizen">Citizen</option>
-          <option value="employee">Employee</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button type="submit" disabled={loading} className="register-button">
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
-      
-      {/* Show the modal upon successful registration */}
-      {showModal && (
-        <Modal message="Registration Successful" onClose={handleCloseModal} />
-      )}
+    <div className="register-wrapper">
+      <div className="register-container">
+        <h2 className="register-title">Create an Account</h2>
+        <form onSubmit={handleSubmit} className="register-form">
+          {error && <p className="register-error-message">{error}</p>}
+          <div className="register-field">
+            <label htmlFor="name" className="register-label">Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Your Name"
+              onChange={handleChange}
+              required
+              className="register-input"
+            />
+          </div>
+          <div className="register-field">
+            <label htmlFor="email" className="register-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Your Email"
+              onChange={handleChange}
+              required
+              className="register-input"
+            />
+          </div>
+          <div className="register-field">
+            <label htmlFor="password" className="register-label">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Create a Password"
+              onChange={handleChange}
+              required
+              className="register-input"
+            />
+          </div>
+          <div className="register-field">
+            <label htmlFor="role" className="register-label">Role</label>
+            <select
+              name="role"
+              id="role"
+              onChange={handleChange}
+              value={formData.role}
+              className="register-select"
+            >
+              <option value="citizen">Citizen</option>
+            </select>
+          </div>
+          <button type="submit" disabled={loading} className="register-button">
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+        </form>
+        {showModal && (
+          <Modal message="Registration Successful!" onClose={handleCloseModal} />
+        )}
+      </div>
     </div>
   );
 };

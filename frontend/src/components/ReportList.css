@@ -9,6 +9,21 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.reportlist-home-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.reportlist-home-button:hover {
+  background-color: #0056b3;
+}
+
+
 .reportlist-title {
   text-align: center;
   color: #333;
