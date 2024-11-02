@@ -10,7 +10,7 @@ const AdminDashboard = () => {
   const [employees, setEmployees] = useState([]); 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(''); 
   const [selectedReportIds, setSelectedReportIds] = useState([]); 
-  const [sendEmailOption, setSendEmailOption] = useState(false); // Renamed state for email option
+  const [sendEmailOption, setSendEmailOption] = useState(false); 
   const history = useHistory(); 
 
   useEffect(() => {
@@ -149,42 +149,51 @@ const AdminDashboard = () => {
 
       {user && user.role === 'admin' ? (
         <>
-          <div className="AdminDashboard-employee-selection">
-            <label htmlFor="employee-select">Assign to Employee:</label>
-            <select
-              id="employee-select"
-              onChange={(e) => setSelectedEmployeeId(e.target.value)}
-              value={selectedEmployeeId}
-              className="AdminDashboard-select"
-            >
-              <option value="">Select Employee</option>
-              {employees.map(employee => (
-                <option key={employee._id} value={employee._id}>
-                  {employee.name} ({employee.email})
-                </option>
-              ))}
-            </select>
+          <div className="AdminDashboard-assign-card">
+            <h3 className="AdminDashboard-assign-title">Assign Reports to Employee</h3>
+            <p className="AdminDashboard-instruction">Select an employee and choose whether to send them an email notification.</p>
 
-            <div>
-              <input 
-                type="radio" 
-                id="sendEmail" 
-                name="emailOption" 
-                value="send" 
-                checked={sendEmailOption} 
-                onChange={() => setSendEmailOption(true)} 
-              />
-              <label htmlFor="sendEmail">Send Email</label>
+            <div className="AdminDashboard-employee-selection">
+              <label htmlFor="employee-select" className="AdminDashboard-select-label">Assign to Employee:</label>
+              <select
+                id="employee-select"
+                onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                value={selectedEmployeeId}
+                className="AdminDashboard-select"
+              >
+                <option value="">Select Employee</option>
+                {employees.map(employee => (
+                  <option key={employee._id} value={employee._id}>
+                    {employee.name} ({employee.email})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <input 
-                type="radio" 
-                id="noEmail" 
-                name="emailOption" 
-                value="noSend" 
-                checked={!sendEmailOption} 
-                onChange={() => setSendEmailOption(false)} 
-              />
-              <label htmlFor="noEmail">Assign Without Sending Email</label>
+            <div className="AdminDashboard-email-option-group">
+              <label className="AdminDashboard-email-option">
+                <input 
+                  type="radio" 
+                  id="sendEmail" 
+                  name="emailOption" 
+                  value="send" 
+                  checked={sendEmailOption} 
+                  onChange={() => setSendEmailOption(true)} 
+                />
+                Send Email
+              </label>
+
+              <label className="AdminDashboard-email-option">
+                <input 
+                  type="radio" 
+                  id="noEmail" 
+                  name="emailOption" 
+                  value="noSend" 
+                  checked={!sendEmailOption} 
+                  onChange={() => setSendEmailOption(false)} 
+                />
+                Assign Without Sending Email
+              </label>
             </div>
 
             <button className="AdminDashboard-assign-button" onClick={handleAssignReport}>

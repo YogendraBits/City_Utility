@@ -143,3 +143,74 @@
 .AdminDashboard-redirect-button:hover {
   background-color: #c82333;
 }
+
+.AdminDashboard-assign-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.AdminDashboard-assign-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.AdminDashboard-instruction {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.AdminDashboard-employee-selection {
+  margin-bottom: 15px;
+}
+
+.AdminDashboard-select-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.AdminDashboard-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.AdminDashboard-email-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Remove extra gap between options */
+  margin: 10px 0; /* Optional: Add some margin above and below the group */
+}
+
+.AdminDashboard-email-option {
+  display: flex;
+  align-items: center; /* Align label and input vertically */
+  margin-bottom: 5px; /* Add a small margin below each option */
+}
+
+.AdminDashboard-email-option input {
+  margin-right: 5px; /* Space between radio button and label */
+}
+
+
+.AdminDashboard-assign-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.AdminDashboard-assign-button:hover {
+  background-color: #0056b3;
+}
