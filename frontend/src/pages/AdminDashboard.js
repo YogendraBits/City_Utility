@@ -58,9 +58,26 @@ const AdminDashboard = () => {
     }
     
     try {
+      // Update the reports locally
+      const updatedReports = reports.map(report => {
+        if (selectedReportIds.includes(report._id)) {
+          return {
+            ...report,
+            assignedEmployee: selectedEmployeeId, // Assign employee ID
+          };
+        }
+        return report;
+      });
+
+      // Set the updated reports immediately
+      setReports(updatedReports);
+
+      // Call API to assign reports
       for (const reportId of selectedReportIds) {
         await assignReportToEmployee(reportId, selectedEmployeeId);
       }
+
+      // Clear selections after assignment
       setSelectedReportIds([]);
       setSelectedEmployeeId('');
     } catch (error) {

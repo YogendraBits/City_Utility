@@ -21,7 +21,9 @@ const Announcements = () => {
     const loadAnnouncements = async () => {
       try {
         const data = await fetchAnnouncements();
-        setAnnouncements(data);
+        // Sort the announcements by createdAt in descending order
+        const sortedAnnouncements = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setAnnouncements(sortedAnnouncements);
       } catch (err) {
         setError('Failed to fetch announcements');
       }
@@ -35,6 +37,23 @@ const Announcements = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate fields based on type
+    const isMaintenance = formData.type === 'maintenance';
+    const isPolicy = formData.type === 'policy';
+    const isSafety = formData.type === 'safety';
+
+    if (isMaintenance && (!formData.startDate || !formData.endDate)) {
+      setError('Both start and end dates are mandatory for maintenance announcements.');
+      return;
+    }
+    
+    if (isPolicy && formData.startDate === '') {
+      setError('Start date is required for policy announcements.');
+      return;
+    }
+
+    // For safety, no mandatory checks
     try {
       if (editingId) {
         const updatedAnnouncement = await updateAnnouncement(editingId, formData, token);
@@ -42,7 +61,10 @@ const Announcements = () => {
         setSuccess('Announcement updated successfully!');
       } else {
         const newAnnouncement = await createAnnouncement(formData, token);
-        setAnnouncements([...announcements, newAnnouncement]);
+        // Add the new announcement to the state and sort again
+        const updatedAnnouncements = [...announcements, newAnnouncement];
+        const sortedAnnouncements = updatedAnnouncements.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setAnnouncements(sortedAnnouncements);
         setSuccess('Announcement created successfully!');
       }
       resetForm();
@@ -77,6 +99,8 @@ const Announcements = () => {
   const resetForm = () => {
     setFormData({ title: '', content: '', type: 'maintenance', startDate: '', endDate: '' });
     setEditingId(null);
+    setError('');
+    setSuccess('');
   };
 
   return (
@@ -121,22 +145,53 @@ const Announcements = () => {
               className="announcement-textarea"
             />
             <div className="announcement-form-group">
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                required
-                className="announcement-date-input"
-              />
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                required
-                className="announcement-date-input"
-              />
+              {formData.type === 'maintenance' && (
+                <>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    required
+                    className="announcement-date-input"
+                  />
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    required
+                    className="announcement-date-input"
+                  />
+                </>
+              )}
+              {formData.type === 'policy' && (
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  className="announcement-date-input"
+                />
+              )}
+              {formData.type === 'safety' && (
+                <>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    className="announcement-date-input"
+                  />
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    className="announcement-date-input"
+                  />
+                </>
+              )}
             </div>
             <div className="announcement-form-actions">
               <button type="submit" className="announcement-submit-button">
@@ -161,8 +216,8 @@ const Announcements = () => {
               <p className="announcement-card-type"><strong>Type:</strong> {announcement.type}</p>
             </div>
             <div className="announcement-card-dates">
-              <p><strong>Effective from:</strong> {new Date(announcement.startDate).toLocaleDateString()}</p>
-              <p><strong>Until:</strong> {new Date(announcement.endDate).toLocaleDateString()}</p>
+              <p><strong>Effective from:</strong> {announcement.startDate ? new Date(announcement.startDate).toLocaleDateString() : 'N.A.'}</p>
+              <p><strong>Until:</strong> {announcement.endDate ? new Date(announcement.endDate).toLocaleDateString() : 'N.A.'}</p>
             </div>
             <p className="announcement-card-content">{announcement.content}</p>
             {user?.role === 'admin' && (
