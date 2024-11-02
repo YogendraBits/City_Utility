@@ -15,7 +15,7 @@ export const loginUser = async (userData) => {
 
 // Set up a base URL for API requests
 const API_URL_REPORTS = 'http://localhost:5001/api/reports'; // Utility Reporting Service
-const API_URL_LOCATION = 'http://localhost:5002/api/location'; // Location Service
+
 
 // Utility Reporting Service
 export const createReport = async (reportData) => {
@@ -93,15 +93,21 @@ export const assignReportToEmployee = async (reportId, employeeId) => {
   return response.data;
 };
 
-// Location Service
-export const getLocation = async (address) => {
-  const url = address
-    ? `${API_URL_LOCATION}?address=${encodeURIComponent(address)}`
-    : `${API_URL_LOCATION}`; // If no address, call without query params
+const API_URL_LOCATION = 'http://localhost:5002/api/location'; // Location Service
 
-  const response = await axios.get(url);
-  return response.data;
+// Location Service that fetches location data
+export const getLocation = async (latitude, longitude) => {
+  try {
+    const response = await axios.get(`${API_URL_LOCATION}?latitude=${latitude}&longitude=${longitude}`);
+    return response.data; // Return the location data
+  } catch (error) {
+    console.error('Error fetching location data:', error);
+    throw new Error('Could not fetch location data'); // Error handling for the ReportForm
+  }
 };
+
+
+
 
 
 // New function to get all employees (assuming there's a user endpoint for employees)

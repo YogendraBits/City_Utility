@@ -1,8 +1,7 @@
 const express = require('express');
-const { getLocation } = require('../controllers/locationController');
-
+const { getLocationData } = require('../controllers/locationController'); // Adjust the path as necessary
 const router = express.Router();
 
-router.get('/', getLocation);
+router.get('/api/location', getLocationData); // Use the controller
 
 module.exports = router;

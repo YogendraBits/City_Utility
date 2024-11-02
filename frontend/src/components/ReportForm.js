@@ -52,21 +52,40 @@ const ReportForm = () => {
   };
 
   const fetchLocation = async () => {
-    try {
-      const locData = await getLocation();
-      const cleanedAddress = locData.address ? locData.address.replace(/^,/, '').trim() : '';
-      const cityFromAddress = cleanedAddress.split(',').pop().trim();
-      setLocation({
-        address: cleanedAddress,
-        city: cityFromAddress || '',
-        postalCode: locData.postalCode || '',
-        country: locData.country || '',
-        coordinates: locData.coordinates || [],
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const locData = await getLocation(latitude, longitude); // Pass latitude and longitude
+      
+          // Set address and other fields correctly
+          const cleanedAddress = locData.address ? locData.address.replace(/^,/, '').trim() : '';
+          
+          // Set city based on what's returned by the API
+          const city = locData.city || ''; // This should be the city name returned by your API
+          const state = locData.state || ''; // Assuming state is included in your API response
+  
+          // Update the state with the correct values
+          setLocation({
+            address: cleanedAddress,
+            city: state ? `${city}, ${state}` : city, // Combine city and state if state exists
+            postalCode: locData.postalCode || '',
+            country: locData.country || '',
+            coordinates: [longitude, latitude], // Store coordinates as needed
+          });
+        } catch (error) {
+          setError(error.message || 'Error fetching location');
+        }
+      }, (error) => {
+        console.error('Error obtaining location:', error);
+        setError('Unable to retrieve location using Geolocation API');
       });
-    } catch (error) {
-      setError(error.response ? error.response.data.message : 'Error fetching location');
+    } else {
+      setError('Geolocation is not supported by this browser.');
     }
   };
+  
+  
 
   const handleLogout = () => {
     logout();
@@ -135,7 +154,7 @@ const ReportForm = () => {
             </div>
           </div>
           <div className="report-form-actions">
-            <button type="button" onClick={fetchLocation} className="report-form-fill-location-button">Fill Location</button>
+            <button type="button" onClick={fetchLocation} className="report-form-fill-location-button">Fetch Location</button>
             <button type="submit" className="report-form-submit-button" disabled={loading}>Submit Report</button>
           </div>
         </form>
@@ -145,7 +164,7 @@ const ReportForm = () => {
         <div className="report-form-popup-overlay">
           <div className="report-form-popup-content">
             <h3>Report Submitted</h3>
-            <p>Sorry for the inconvenience Caused. Your report has been submitted successfully.We'll try to resolve as soon as possible.</p>
+            <p>Sorry for the inconvenience caused. Your report has been submitted successfully. We'll try to resolve it as soon as possible.</p>
             <button onClick={() => history.push('/my-reports')} className="report-form-go-to-reports-button">Go to Reports</button>
             <button onClick={() => setShowPopup(false)} className="report-form-close-popup-button">Close</button>
           </div>

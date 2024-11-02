@@ -73,7 +73,6 @@ exports.updateReportStatus = async (req, res) => {
 // Assign a report to an employee
 exports.assignReportToEmployee = async (req, res) => {
   const { reportId, employeeId } = req.body;
-  console.log("Attempting to assign reportId:", reportId, "to employeeId:", employeeId);
 
   try {
     const report = await Report.findByIdAndUpdate(
@@ -83,11 +82,9 @@ exports.assignReportToEmployee = async (req, res) => {
     );
 
     if (!report) {
-      console.log("Report not found for ID:", reportId);
       return res.status(404).json({ message: 'Report not found' });
     }
-    
-    console.log("Report assigned successfully:", report);
+
     res.json(report);
   } catch (error) {
     console.error('Error assigning report:', error.message);

@@ -57,7 +57,6 @@ exports.loginUser = async (req, res) => {
 exports.getEmployees = async (req, res) => {
   try {
     const employees = await User.find({ role: 'employee' });
-    console.log('Fetched employees:', employees); // Log fetched employees for debugging
     res.status(200).json(employees);
   } catch (error) {
     console.error('Error fetching employees:', error); // Log the error for debugging

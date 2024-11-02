@@ -1,17 +1,19 @@
+require('dotenv').config(); // Load environment variables from .env file
+
 const express = require('express');
-const locationRoutes = require('./routes/locationRoutes'); // Adjust the path as necessary
 const cors = require('cors');
+const locationRouter = require('./routes/locationRoutes'); // Adjust the path as necessary
 
 const app = express();
-const PORT = process.env.PORT || 5002; // Use 5002 for your Location Service
+const PORT = process.env.PORT || 5002;
 
 app.use(cors());
-// Middleware to parse JSON
 app.use(express.json());
 
-// Mount the router
-app.use('/api/location', locationRoutes); // Ensure this matches your frontend API calls
+// Use the location router
+app.use(locationRouter);
 
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Location service running on port ${PORT}`);
 });
