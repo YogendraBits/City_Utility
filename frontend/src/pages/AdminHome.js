@@ -1,22 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link,useHistory } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './AdminHome.css'; 
 
 const AdminHome = () => {
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const history = useHistory();
 
-  if (!user || user.role !== 'admin') {
-    return (
-      <div className="AdminHome-container">
-        <div className="AdminHome-access-denied">
-          <p>You do not have permission to view this page. Please log in as an admin.</p>
-          <Link to="/login" className="AdminHome-btn-primary">Login</Link>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Check if user is not logged in or doesn't have the 'citizen' role
+    if (!user || user.role !== 'admin') {
+      history.push('/login'); // Redirect to login page
+    }
+  }, [user, history]); // Dependency array includes user and history
 
   const handleToggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -24,6 +21,14 @@ const AdminHome = () => {
     logout();
     setDropdownOpen(false);
   };
+  const handleProfileUpdate = () => {
+    history.push('/profile/update'); // Navigate to Profile Update page
+    setDropdownOpen(false); // Close dropdown after navigation
+  };
+
+  if (!user || user.role !== 'admin') {
+    return null; // This part will never render because of the redirect in useEffect
+  }
 
   return (
     <div className="AdminHome-container">
@@ -36,6 +41,7 @@ const AdminHome = () => {
             </button>
             {dropdownOpen && (
               <div className="AdminHome-dropdown">
+                <button onClick={handleProfileUpdate} className="AdminHome-dropdown-item">Profile Update</button>
                 <button onClick={handleLogout} className="AdminHome-dropdown-item">Logout</button>
               </div>
             )}

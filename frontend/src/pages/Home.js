@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Home.css'; // Ensure your CSS file has styles for the layout
 
 const Home = () => {
   const { user, logout } = useAuth(); // Assume logout is a function from AuthContext
   const [dropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
+  const history = useHistory();
 
-  // Check if user is not logged in or doesn't have the 'citizen' role
-  if (!user || user.role !== 'citizen') {
-    return (
-      <div className="home-container mt-5">
-        <p>Please log in as a citizen.</p>
-        <Link to="/login" className="home-btn btn-primary">Login</Link>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Check if user is not logged in or doesn't have the 'citizen' role
+    if (!user || user.role !== 'citizen') {
+      history.push('/login'); // Redirect to login page
+    }
+  }, [user, history]); // Dependency array includes user and history
 
   const handleToggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -25,6 +23,16 @@ const Home = () => {
     logout();
     setDropdownOpen(false); // Close dropdown after logging out
   };
+  
+  const handleProfileUpdate = () => {
+    history.push('/profile/update'); // Navigate to Profile Update page
+    setDropdownOpen(false); // Close dropdown after navigation
+  };
+
+  // If the user is logged in and has the correct role, render the home content
+  if (!user || user.role !== 'citizen') {
+    return null; // This part will never render because of the redirect in useEffect
+  }
 
   return (
     <div className="home-container mt-5">
@@ -36,6 +44,7 @@ const Home = () => {
           </button>
           {dropdownOpen && (
             <div className="home-dropdown">
+              <button onClick={handleProfileUpdate} className="home-dropdown-item">Profile Update</button>
               <button onClick={handleLogout} className="home-dropdown-item">Logout</button>
             </div>
           )}

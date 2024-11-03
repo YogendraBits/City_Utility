@@ -96,36 +96,31 @@ const EmployeeDashboard = () => {
   };
 
   // Redirect function for unauthorized access
-  const handleRedirect = () => {
-    if (user) {
+  useEffect(() => {
+    // Check user role and redirect accordingly
+    if (!user) {
+      history.push('/login'); // Redirect to login if no user
+    } else {
       switch (user.role) {
-        case 'admin':
+        case 'AdminHome':
           history.push('/admin');
           break;
         case 'employee':
-          history.push('/employee');
+          // Stay on the employee page
           break;
         case 'citizen':
-          history.push('/');
+          history.push('/'); // Redirect citizen to home
           break;
         default:
-          history.push('/');
+          history.push('/login'); // Fallback in case of an unexpected role
       }
-    } else {
-      history.push('/login');
-    }    
-  };
+    }
+  }, [user, history]);
 
-  // Check for employee role and render accordingly
+  // If the user is not an employee, redirecting is already handled in useEffect
+  // You can add any additional rendering logic for the employee page below if needed
   if (user?.role !== 'employee') {
-    return (
-      <div className="emp-access-denied">
-        <p>Access Denied: This page is for employees only.</p>
-        <button className="emp-redirect-button" onClick={handleRedirect}>
-          Leave
-        </button>
-      </div>
-    );
+    return null; // This will prevent rendering if not an employee
   }
 
   // Sort reports by status
@@ -143,12 +138,18 @@ const EmployeeDashboard = () => {
     <div className="emp-employee-dashboard">
       <header className="emp-header">
         <h2>Employee Dashboard</h2>
+        <div className="emp-user-details">
+            <p><strong>Name:</strong> {user.name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+        </div>
         <div className="emp-user-info">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
+          <button className="emp-profile-button" onClick={() => history.push('/profile/update')}>
+            Profile Update
+          </button>
           <button className="emp-logout-button" onClick={logout}>Logout</button>
         </div>
       </header>
+
 
       {loading && <p>Loading reports...</p>} {/* Loading message */}
       {error && <p className="emp-error-message">{error}</p>}
@@ -184,12 +185,12 @@ const EmployeeDashboard = () => {
                     </label>
                     <button 
                       onClick={() => handleStatusChange(report._id, 'in-progress', report, emailConfirmed[report._id])} 
-                      className="emp-status-button">
+                      className="emp-status-button emp-in-progress-button">
                       Mark In Progress
                     </button>
                     <button 
                       onClick={() => handleStatusChange(report._id, 'completed', report, false)} 
-                      className="emp-status-button">
+                      className="emp-status-button emp-completed-button">
                       Mark Completed
                     </button>
                   </>
@@ -206,7 +207,7 @@ const EmployeeDashboard = () => {
                     </label>
                     <button 
                       onClick={() => handleStatusChange(report._id, 'completed', report, emailConfirmed[report._id])} 
-                      className="emp-status-button">
+                      className="emp-status-button emp-completed-button">
                       Mark Completed
                     </button>
                   </>

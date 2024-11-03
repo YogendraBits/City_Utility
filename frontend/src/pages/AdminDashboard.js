@@ -32,11 +32,25 @@ const AdminDashboard = () => {
       }
     };
 
-    if (user && user.role === 'admin') {
+    // Redirect if user is not admin
+    if (!user) {
+      history.push('/login');
+    } else if (user.role === 'admin') {
       fetchReports();
       fetchEmployees();
+    } else {
+      switch (user.role) {
+        case 'employee':
+          history.push('/employee');
+          break;
+        case 'citizen':
+          history.push('/');
+          break;
+        default:
+          history.push('/login'); // Fallback for any other roles
+      }
     }
-  }, [user]);
+  }, [user, history]);
 
   const formatDateToIST = (dateString) => {
     const date = new Date(dateString);
@@ -105,27 +119,6 @@ const AdminDashboard = () => {
         return [...prevSelected, reportId];
       }
     });
-  };
-
-  const handleRedirect = () => {
-    if (user) {
-      switch (user.role) {
-        case 'admin':
-          history.push('/admin');
-          break;
-        case 'employee':
-          history.push('/employee');
-          break;
-        case 'citizen':
-          history.push('/');
-          break;
-        default:
-          history.push('/');
-      }
-    } else {
-      // If no user is found, redirect to login
-      history.push('/login');
-    }    
   };
 
   // Sort reports by status
@@ -258,10 +251,6 @@ const AdminDashboard = () => {
         </>
       ) : (
         <div className="AdminDashboard-unauthorized-message">
-          <p>You do not have permission to view this dashboard.</p>
-          <button className="AdminDashboard-redirect-button" onClick={handleRedirect}>
-            Leave
-          </button>
         </div>
       )}
     </div>

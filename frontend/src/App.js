@@ -11,6 +11,7 @@ import Announcements from './pages/Announcements';
 import ReportForm from './components/ReportForm';
 import ReportList from './components/ReportList';
 import RegisterEmployee from './components/RegisterEmployee';
+import ProfileUpdate from './pages/ProfileUpdate';
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -27,6 +28,7 @@ const AppRoutes = () => {
       <Route path="/announcements" component={Announcements} />
       <Route path="/submit-report" component={ReportForm} />
       <Route path="/my-reports" component={ReportList} />
+      <Route path="/profile/update" component={ProfileUpdate} />
     </Switch>
   );
 };

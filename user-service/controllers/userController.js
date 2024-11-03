@@ -82,3 +82,33 @@ exports.getUserById = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.updateUser = async (req, res) => {
+  const userId = req.params.id;
+  const { name, email, password } = req.body;
+
+  try {
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email;
+    if (password) updates.password = password; // Store password directly
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+      }
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
