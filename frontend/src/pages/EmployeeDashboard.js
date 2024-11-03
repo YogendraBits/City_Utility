@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAssignedReports, updateReportStatus } from '../api';
+import { getAssignedReports, updateReportStatus, getUserById, sendEmail } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import './EmployeeDashboard.css';
@@ -8,10 +8,13 @@ const EmployeeDashboard = () => {
   const { user, logout } = useAuth();
   const [reports, setReports] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true); // Loading state
+  const [emailConfirmed, setEmailConfirmed] = useState({}); // Store checkbox states
   const history = useHistory();
 
   useEffect(() => {
     const fetchReports = async () => {
+      setLoading(true);
       try {
         const data = await getAssignedReports();
         console.log("Fetched reports:", data);
@@ -19,20 +22,73 @@ const EmployeeDashboard = () => {
       } catch (err) {
         console.error('Error fetching assigned reports:', err);
         setError('Error fetching assigned reports');
+      } finally {
+        setLoading(false); // Stop loading after fetch
       }
     };
 
     fetchReports();
   }, []);
 
-  const handleStatusChange = async (reportId, newStatus) => {
+  const handleCheckboxChange = (reportId, checked) => {
+    setEmailConfirmed(prev => ({ ...prev, [reportId]: checked }));
+  };
+
+  const handleStatusChange = async (reportId, newStatus, report, sendEmailConfirmation) => {
     try {
       const updatedReport = await updateReportStatus(reportId, newStatus);
       setReports((prevReports) =>
-        prevReports.map((report) =>
-          report._id === reportId ? updatedReport : report
-        )
+        prevReports.map((r) => (r._id === reportId ? updatedReport : r))
       );
+
+      // If the user chose to send an email
+      if (sendEmailConfirmation) {
+        // Fetch the creator's email
+        const creatorEmailResponse = await getUserById(report.userId);
+        const emailToSend = creatorEmailResponse.email;
+
+        console.log('Fetched creator email:', emailToSend);
+
+        if (!emailToSend) {
+          console.error('Creator email not found');
+          setError('Error: Creator email not found');
+          return; // Exit early to avoid sending email
+        }
+
+        // Prepare email content
+        let subject;
+        let emailData;
+
+        if (newStatus === 'in-progress') {
+          subject = 'Your Report is Being Addressed';
+          emailData = {
+            type: report.type,
+            status: newStatus,
+            description: report.description,
+            location: report.location,
+          };
+        } else if (newStatus === 'completed') {
+          subject = 'Your Report has been Resolved';
+          emailData = {
+            type: report.type,
+            status: newStatus,
+            description: report.description,
+            location: report.location,
+          };
+        }
+
+        // Send email notification
+        try {
+          await sendEmail({
+            to: emailToSend,
+            subject,
+            data: emailData,
+          });
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+          setError('Error sending email notification');
+        }
+      }
     } catch (err) {
       console.error('Error updating report status:', err);
       setError('Error updating report status');
@@ -56,7 +112,6 @@ const EmployeeDashboard = () => {
           history.push('/');
       }
     } else {
-      // If no user is found, redirect to login
       history.push('/login');
     }    
   };
@@ -95,6 +150,7 @@ const EmployeeDashboard = () => {
         </div>
       </header>
 
+      {loading && <p>Loading reports...</p>} {/* Loading message */}
       {error && <p className="emp-error-message">{error}</p>}
       {sortedReports.length === 0 ? (
         <p>No reports assigned to you.</p>
@@ -118,18 +174,42 @@ const EmployeeDashboard = () => {
               <div className="emp-report-actions">
                 {report.status === 'pending' && (
                   <>
-                    <button onClick={() => handleStatusChange(report._id, 'in-progress')} className="emp-status-button">
+                    <label>
+                      <input 
+                        type="checkbox" 
+                        checked={emailConfirmed[report._id] || false} 
+                        onChange={(e) => handleCheckboxChange(report._id, e.target.checked)} 
+                      />
+                      Send confirmation email
+                    </label>
+                    <button 
+                      onClick={() => handleStatusChange(report._id, 'in-progress', report, emailConfirmed[report._id])} 
+                      className="emp-status-button">
                       Mark In Progress
                     </button>
-                    <button onClick={() => handleStatusChange(report._id, 'completed')} className="emp-status-button">
+                    <button 
+                      onClick={() => handleStatusChange(report._id, 'completed', report, false)} 
+                      className="emp-status-button">
                       Mark Completed
                     </button>
                   </>
                 )}
                 {report.status === 'in-progress' && (
-                  <button onClick={() => handleStatusChange(report._id, 'completed')} className="emp-status-button">
-                    Mark Completed
-                  </button>
+                  <>
+                    <label>
+                      <input 
+                        type="checkbox" 
+                        checked={emailConfirmed[report._id] || false} 
+                        onChange={(e) => handleCheckboxChange(report._id, e.target.checked)} 
+                      />
+                      Send confirmation email
+                    </label>
+                    <button 
+                      onClick={() => handleStatusChange(report._id, 'completed', report, emailConfirmed[report._id])} 
+                      className="emp-status-button">
+                      Mark Completed
+                    </button>
+                  </>
                 )}
               </div>
             </li>

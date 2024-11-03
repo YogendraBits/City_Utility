@@ -63,3 +63,22 @@ exports.getEmployees = async (req, res) => {
     res.status(500).json({ message: 'Error fetching employees' });
   }
 };
+
+
+exports.getUserById = async (req, res) => {
+  const userId = req.params.id; // assuming the _id is passed as a URL parameter
+
+  try {
+    // Find the user by _id
+    const user = await User.findById(userId).select('name email'); // select only name and email fields
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

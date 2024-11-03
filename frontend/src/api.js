@@ -13,6 +13,16 @@ export const loginUser = async (userData) => {
   return response.data;
 };
 
+export const getUserById = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/${userId}`);
+    return response.data; // Return the user data
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    throw error; // Throw the error for handling in the calling component
+  }
+};
+
 // Set up a base URL for API requests
 const API_URL_REPORTS = 'http://localhost:5001/api/reports'; // Utility Reporting Service
 
