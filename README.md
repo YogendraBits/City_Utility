@@ -5,7 +5,7 @@ This project is a **multi-service web application** that includes both frontend 
 
 ## Project Structure
 
-```plaintext
+plaintext
 ├── LICENSE
 ├── README.md
 ├── admin/
