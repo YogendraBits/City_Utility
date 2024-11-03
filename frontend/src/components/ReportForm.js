@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { createReport, getLocation } from '../api';
+import { createReport, getLocation, sendEmail } from '../api'; // Ensure sendEmail is imported
 import { useAuth } from '../context/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
 import './ReportForm.css';
 
 const ReportForm = () => {
   const { user, logout } = useAuth();
+  console.log('Logged-in user:', user);
   const [type, setType] = useState('water');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState({
@@ -15,6 +16,7 @@ const ReportForm = () => {
     country: '',
     coordinates: [],
   });
+  const [sendEmailOption, setSendEmailOption] = useState(false); // State for email option
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -37,6 +39,15 @@ const ReportForm = () => {
       await createReport(reportData);
       setShowPopup(true);
       resetForm();
+
+      // Send email if option is selected
+      if (sendEmailOption) {
+        await sendEmail({
+          to: user.email,
+          subject: 'Report Submission Confirmation',
+          data: `Your report has been submitted with the following details:\nType: ${type}\nDescription: ${description}\nLocation: ${location.postalCode}`,
+        });
+      }
     } catch (error) {
       setError(error.response ? error.response.data.message : 'Error submitting report');
     } finally {
@@ -56,22 +67,16 @@ const ReportForm = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          const locData = await getLocation(latitude, longitude); // Pass latitude and longitude
-      
-          // Set address and other fields correctly
+          const locData = await getLocation(latitude, longitude); 
           const cleanedAddress = locData.address ? locData.address.replace(/^,/, '').trim() : '';
-          
-          // Set city based on what's returned by the API
-          const city = locData.city || ''; // This should be the city name returned by your API
-          const state = locData.state || ''; // Assuming state is included in your API response
-  
-          // Update the state with the correct values
+          const city = locData.city || ''; 
+          const state = locData.state || ''; 
           setLocation({
             address: cleanedAddress,
-            city: state ? `${city}, ${state}` : city, // Combine city and state if state exists
+            city: state ? `${city}, ${state}` : city,
             postalCode: locData.postalCode || '',
             country: locData.country || '',
-            coordinates: [longitude, latitude], // Store coordinates as needed
+            coordinates: [longitude, latitude],
           });
         } catch (error) {
           setError(error.message || 'Error fetching location');
@@ -84,8 +89,6 @@ const ReportForm = () => {
       setError('Geolocation is not supported by this browser.');
     }
   };
-  
-  
 
   const handleLogout = () => {
     logout();
@@ -155,6 +158,17 @@ const ReportForm = () => {
           </div>
           <div className="report-form-actions">
             <button type="button" onClick={fetchLocation} className="report-form-fill-location-button">Fetch Location</button>
+
+            {/* Email notification toggle */}
+            <label className="report-form-email-option">
+              <input
+                type="checkbox"
+                checked={sendEmailOption}
+                onChange={(e) => setSendEmailOption(e.target.checked)}
+              />
+              Send Email Notification
+            </label>
+
             <button type="submit" className="report-form-submit-button" disabled={loading}>Submit Report</button>
           </div>
         </form>

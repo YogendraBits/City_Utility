@@ -14,6 +14,7 @@ const EmployeeDashboard = () => {
     const fetchReports = async () => {
       try {
         const data = await getAssignedReports();
+        console.log("Fetched reports:", data);
         setReports(data);
       } catch (err) {
         console.error('Error fetching assigned reports:', err);
