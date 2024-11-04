@@ -62,7 +62,7 @@ Home    : Where User Get Three Option
     All three are different web pages and user with citizen role can access them.
 
 Admin Home : Where Admin Get Three Option
-            - Add Employee  -> Where New Employee can be added.
+            - Add Employee  -> Where New Employee can be added and can be deleted.
             - Admin Panel   -> Where admin can see all reports and assign them to employee.
             - Announcements -> To create edit or delete announcements.
     
@@ -71,7 +71,10 @@ Admin Home : Where Admin Get Three Option
 Employee Page : 
             - Employee see Reports assign to them and can change status.
 
-View Announcements
+View Announcements - Announcements can be seen by anyone with or without login.
+
+There is Option to update Profile for all users where they can Change name , email and password.
+Only Citizen will be able to delete their account.
 
 Dockerfile - Configuration for building the frontend Docker image.
 

@@ -54,7 +54,7 @@ const AdminHome = () => {
       <div className="AdminHome-tile-container">
         <div className="AdminHome-tile">
           <h2>Announcements</h2>
-          <p>Manage and post city announcements.</p>
+          <p>Manage and post city announcements for public information.</p>
           <Link to="/announcements" className="AdminHome-btn-secondary">Manage Announcements</Link>
         </div>
         <div className="AdminHome-tile">
@@ -63,9 +63,9 @@ const AdminHome = () => {
           <Link to="/admin" className="AdminHome-btn-secondary">Go to Admin Panel</Link>
         </div>
         <div className="AdminHome-tile">
-          <h2>Register Employee</h2>
-          <p>Register new employees to manage the city.</p>
-          <Link to="/register_employee" className="AdminHome-btn-secondary">Register Employee</Link>
+          <h2>Employee Management</h2>
+          <p>Register or Remove  employees to manage the city.</p>
+          <Link to="/register_employee" className="AdminHome-btn-secondary">Manage Employee</Link>
         </div>
       </div>
     </div>

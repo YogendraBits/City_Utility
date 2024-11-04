@@ -112,3 +112,22 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+// Delete a user by ID
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id; // assuming the _id is passed as a URL parameter
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

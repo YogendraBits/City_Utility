@@ -11,6 +11,7 @@
   }
   
   .profile-update-card {
+    position: relative;
     background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
     border-radius: 15px; /* Rounded corners */
     padding: 30px;
@@ -88,22 +89,78 @@
     }
   }
   
+  .profile-delete-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: transparent;
+    border: none;
+    color: #e74c3c;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-delete-icon:hover {
+    color: #c0392b; /* Darker color on hover */
+  }
+  
+  .profile-delete-icon svg {
+    pointer-events: none; /* Prevents icon-specific hover issues */
+  }
+  
   .modal {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
   }
   
   .modal-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
+    max-width: 400px;
     text-align: center;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 10px;
+  }
+  
+  .modal-content p {
+    margin-bottom: 20px;
+  }
+  
+  .modal-content button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content button:first-of-type {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .modal-content button:first-of-type:hover {
+    background-color: #c0392b;
+  }
+  
+  .modal-content button:last-of-type {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .modal-content button:last-of-type:hover {
+    background-color: #2980b9;
   }
   
