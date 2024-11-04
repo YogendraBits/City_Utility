@@ -32,6 +32,17 @@ export const updateUser = async (userId, userData, token) => {
   return response.data;
 };
 
+export const deleteUserById = async (userId) => {
+  try {
+    // Use axios.delete instead of axios.get
+    await axios.delete(`${API_URL}/${userId}`);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error; // Throw the error for handling in the calling component
+  }
+};
+
+
 // Set up a base URL for API requests
 const API_URL_REPORTS = 'http://localhost:5001/api/reports'; // Utility Reporting Service
 
