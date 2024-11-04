@@ -15,7 +15,7 @@ const mailjet = require('node-mailjet').connect(
         Messages: [
           {
             From: {
-              Email: '2023sl93059@wilp.bits-pilani.ac.in', // Replace with sender's email
+              Email: process.env.MAILJET_SENDER_EMAIL, // Replace with sender's email
               Name: 'City Manager'
             },
             To: [
