@@ -42,6 +42,7 @@ In Employee Dashboard , when employee updates the report status, user gets the e
     PORT=5005
     MAILJET_API_KEY=
     MAILJET_API_SECRET=
+    MAILJET_SENDER_EMAIL=
 
 Dockerfile - Docker configuration for containerizing the service.
 To run on localhost using Docker
