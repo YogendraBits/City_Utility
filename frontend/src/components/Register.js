@@ -1,20 +1,46 @@
 import React, { useState } from 'react';
-import { registerUser } from '../api';
+import { registerUser, sendEmail } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useHistory } from 'react-router-dom';
-import Modal from './Modal';
+import RegisterScreenModal from './RegisterScreenModal';
 import './Register.css';
+
+const MAX_ATTEMPTS = 5;
 
 const Register = () => {
   const { login } = useAuth();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'citizen' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [userCode, setUserCode] = useState('');
+  const [remainingAttempts, setRemainingAttempts] = useState(MAX_ATTEMPTS);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const history = useHistory();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const generateVerificationCode = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+  };
+
+  const sendVerificationEmail = async (email, code) => {
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Verify Your Registration Code',
+        data: {
+          text: `Your verification code is ${code}. Enter this code to complete your registration.`,
+        },
+      });
+      console.log('Verification email sent successfully');
+    } catch (err) {
+      console.error('Error sending verification email:', err);
+      setError('Error sending verification email. Please try again later.');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -22,29 +48,48 @@ const Register = () => {
     setLoading(true);
     setError('');
 
-    try {
-      const response = await registerUser(formData);
+    const code = generateVerificationCode();
+    setVerificationCode(code);
 
-      if (response.user) {
-        login(response.user, response.token || '');
-        setShowModal(true);
-      } else {
-        throw new Error('User data not found in response');
-      }
+    try {
+      await sendVerificationEmail(formData.email, code);
+      setShowVerificationModal(true);
     } catch (err) {
-      if (err.response) {
-        setError(err.response.data.message);
-      } else {
-        setError('An unexpected error occurred. Please try again later.');
-      }
+      setError('Failed to send verification email. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleVerificationSubmit = async () => {
+    if (userCode === verificationCode) {
+      try {
+        const response = await registerUser(formData);
+        if (response.user) {
+          login(response.user, response.token || '');
+          setIsVerified(true); // Set to true to show the success message
+        } else {
+          throw new Error('User data not found in response');
+        }
+      } catch (err) {
+        setError('Registration failed. Please try again later.');
+      }
+    } else {
+      setRemainingAttempts(prev => prev - 1);
+
+      if (remainingAttempts - 1 <= 0) {
+        alert('Maximum attempts reached. Please try registering again.');
+        setShowVerificationModal(false);
+        window.location.reload();
+      } else {
+        setError(`Incorrect verification code. ${remainingAttempts - 1} attempts remaining.`);
+      }
+    }
+  };
+
   const handleCloseModal = () => {
-    setShowModal(false);
-    history.push('/login');
+    setShowVerificationModal(false);
+    history.push('/login'); // Redirect to login after successful registration
   };
 
   return (
@@ -105,8 +150,18 @@ const Register = () => {
             {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
-        {showModal && (
-          <Modal message="Registration Successful!" onClose={handleCloseModal} />
+
+        {/* Verification modal */}
+        {showVerificationModal && (
+          <RegisterScreenModal
+            message="Enter the verification code sent to your email"
+            onClose={handleCloseModal}
+            onVerify={handleVerificationSubmit}
+            userCode={userCode}
+            setUserCode={setUserCode}
+            remainingAttempts={remainingAttempts}
+            isVerified={isVerified}
+          />
         )}
       </div>
     </div>
