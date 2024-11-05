@@ -20,8 +20,8 @@ This project is a **multi-service web application** that includes both frontend 
 Folder and File Overview
 Here's a breakdown of the main directories and their purposes:
 
-
 ## 1. frontend/
+
 This directory contains the React frontend for the application.
 
 For Citizen:
@@ -66,6 +66,8 @@ docker run -d -p 3000:3000 --name frontend frontend
 .env - Requires
     REACT_APP_API_URL=http://localhost:5000/api/users
 
+
+
 ## 2. user-service/
 
 Responsible for user management, including registration, login, and updation of user data.
@@ -104,6 +106,8 @@ It doesn't need to run on any localhost.
     JWT_SECRET="your_jwt_secret"
 
 
+
+
 ## 4. email-service/
 It's a microservice that use MAILJET for email communication. It's Expects data and to (email address) to send mail.
 This microservice has been used in ReportForm , Admin Dashboard , Employ Dashboard.
@@ -125,6 +129,8 @@ docker build -t email-service .
 docker run -d -p 5005:5005 --name email-service-container email-service
 
 
+
+
 ## 5. location-service/
 
 This is a microservice where we use browser based Geolocation API which sends coordinates and using those coordinated use find exact address of user using OPENCAGE_API_KEY.
@@ -138,6 +144,8 @@ docker run -d -p 5002:5002 --name location-service location-service
 ```bash
 .env - Requires
     OPENCAGE_API_KEY="your opencage api key"
+
+
 
 
 
