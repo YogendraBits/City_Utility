@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllReports, getEmployees, assignReportToEmployee, sendEmail } from '../api';
+import { getAllReports, getEmployees, assignReportToEmployee, sendEmail, createHistory, deleteReport } from '../api'; 
 import { useAuth } from '../context/AuthContext'; 
 import { useHistory } from 'react-router-dom'; 
 import './AdminDashboard.css'; 
@@ -17,6 +17,7 @@ const AdminDashboard = () => {
     const fetchReports = async () => {
       try {
         const data = await getAllReports(); 
+        console.log('Fetched Reports:', data);
         setReports(data);
       } catch (error) {
         console.error('Error fetching reports:', error);
@@ -110,7 +111,54 @@ const AdminDashboard = () => {
       console.error('Error assigning report:', error);
     }
   };
-  
+
+  const handleAchieveReports = async (reportIds) => {
+    if (!reportIds || reportIds.length === 0) {
+        console.error('No report selected for achieving');
+        return;
+    }
+
+    try {
+        for (const reportId of reportIds) {
+            try {
+                const report = reports.find(r => r._id === reportId);
+                if (!report) {
+                    console.warn(`Report with ID ${reportId} not found in the reports list.`);
+                    continue;
+                }
+
+                const historyData = {
+                    userId: report.userId,
+                    type: report.type,
+                    description: report.description,
+                    coordinates: report.location.coordinates,
+                    status: report.status,
+                    assignedEmployee: report.assignedEmployee,
+                    createdAt: report.createdAt,
+                    updatedAt: report.updatedAt,
+                };
+
+                await createHistory(historyData);
+
+                // Delete the report after archiving it
+                await deleteReport(reportId);
+                console.log(`Successfully deleted report ID ${reportId}`);
+
+                // Update local state by filtering out the archived report
+                setReports((prevReports) => prevReports.filter((r) => r._id !== reportId));
+            } catch (error) {
+                console.error(`Error achieving report ID ${reportId}:`, error);
+            }
+        }
+
+        // Clear selected report IDs after processing
+        setSelectedReportIds([]);
+    } catch (outerError) {
+        console.error('Error in handleAchieveReports:', outerError);
+    }
+  };
+
+
   const handleReportSelection = (reportId) => {
     setSelectedReportIds((prevSelected) => {
       if (prevSelected.includes(reportId)) {
@@ -244,17 +292,28 @@ const AdminDashboard = () => {
                       <strong>Coordinates:</strong> [{report.location?.coordinates?.join(', ')}] <br />
                     </div>
                   </div>
+
+                  {/* Archive Button for completed reports with assigned employees */}
+                  {report.assignedEmployee && report.status === 'completed' && (
+                    <button 
+                      className="AdminDashboard-achieve-button"
+                      onClick={() => handleAchieveReports([report._id])} // Pass the specific report ID to achieve
+                    >
+                      Archive Report
+                    </button>
+                  )}
                 </div>
               );
             })}
           </div>
         </>
       ) : (
-        <div className="AdminDashboard-unauthorized-message">
-        </div>
+        <p>You do not have access to this page.</p>
       )}
     </div>
   );
 };
 
 export default AdminDashboard;
+
+

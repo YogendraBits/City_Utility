@@ -97,9 +97,9 @@
 }
 
 .AdminDashboard-description-box {
-  max-height: 500px; /* Set maximum height */
+  max-height: 100px; /* Set maximum height */
   overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: auto; /* Hide horizontal overflow */
+  /* overflow-x: auto; Hide horizontal overflow */
   margin: 10px 0;
   border: 1px solid #ccc; /* Optional border for visibility */
   padding: 5px; /* Optional padding */
@@ -212,5 +212,18 @@
 }
 
 .AdminDashboard-assign-button:hover {
+  background-color: #0056b3;
+}
+
+.AdminDashboard-achieve-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.AdminDashboard-achieve-button:hover {
   background-color: #0056b3;
 }

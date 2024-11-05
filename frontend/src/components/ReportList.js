@@ -1,6 +1,6 @@
 // src/pages/ReportList.js
 import React, { useEffect, useState } from 'react';
-import { getReports, deleteReport } from '../api'; // Ensure deleteReport is imported
+import { getReports, deleteReport, getHistoryByUserId } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import './ReportList.css';
@@ -8,10 +8,12 @@ import './ReportList.css';
 const ReportList = () => {
   const { user } = useAuth();
   const [reports, setReports] = useState([]);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // User role check
+  console.log("Current User:", user);
+
   if (!user || user.role !== 'citizen') {
     return (
       <div className="reportlist-container mt-5">
@@ -30,12 +32,17 @@ const ReportList = () => {
       }
 
       try {
+        console.log("Fetching reports and history for User ID:", user._id);
+
         const reportsData = await getReports();
         const userReports = reportsData.filter(report => report.userId === user._id);
         setReports(userReports);
+
+        const historyData = await getHistoryByUserId(user._id);
+        setHistory(historyData);
       } catch (error) {
-        console.error("Error fetching reports:", error);
-        setError("Failed to load reports.");
+        console.error("Error fetching reports or history:", error);
+        setError("Failed to load reports or history.");
       } finally {
         setLoading(false);
       }
@@ -44,14 +51,13 @@ const ReportList = () => {
     fetchReports();
   }, [user]);
 
-  // Function to handle deletion of a report
   const handleDeleteReport = async (reportId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this report?");
-    if (!confirmDelete) return; // Cancel deletion
+    if (!confirmDelete) return;
 
     try {
+      console.log("Deleting report with ID:", reportId);
       await deleteReport(reportId);
-      // Update the reports state to remove the deleted report
       setReports(reports.filter(report => report._id !== reportId));
     } catch (error) {
       console.error("Error deleting report:", error);
@@ -59,11 +65,12 @@ const ReportList = () => {
     }
   };
 
-  // Function to sort reports by status
   const sortedReports = reports.sort((a, b) => {
     const statusOrder = { pending: 1, 'in-progress': 2, completed: 3 };
     return statusOrder[a.status] - statusOrder[b.status];
   });
+
+  const sortedHistory = history.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="reportlist">
@@ -71,9 +78,10 @@ const ReportList = () => {
         <Link to="/" className="reportlist-home-button">Go Home</Link>
         <h2 className="reportlist-title">Reported Utility Issues</h2>
       </div>
-      {loading && <p className="reportlist-loading">Loading reports...</p>}
+      {loading && <p className="reportlist-loading">Loading reports and history...</p>}
       {error && <p className="reportlist-error">{error}</p>}
       {reports.length === 0 && !loading && <p className="reportlist-no-reports">No reports available.</p>}
+
       <div className="reportlist-grid">
         {sortedReports.map((report) => (
           <div key={report._id} className={`reportlist-item reportlist-status-${report.status}`}>
@@ -101,6 +109,34 @@ const ReportList = () => {
             <button className="reportlist-delete-button" onClick={() => handleDeleteReport(report._id)}>
               Delete
             </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Section for displaying history */}
+      <div className="reportlist-history">
+        <h2 className="reportlist-title">History</h2>
+        {sortedHistory.length === 0 && <p>No history found.</p>}
+        {sortedHistory.map((item) => (
+          <div key={item._id} className={`reportlist-item reportlist-status-${item.status}`}>
+            <div className="reportlist-header">
+              <div className="reportlist-type-status">
+                <strong>Type:</strong> {item.type} <span className={`reportlist-status reportlist-status-${item.status}`}>Status: {item.status}</span>
+              </div>
+              <div className="reportlist-location">
+                <strong>Coordinates:</strong> {item.coordinates.join(', ')}
+              </div>
+            </div>
+            <div className="reportlist-description">
+              <strong>Description:</strong>
+              <div className="reportlist-description-box">
+                {item.description}
+              </div>
+            </div>
+            <div className="reportlist-timestamps">
+              <div><strong>Created At:</strong> {new Date(item.createdAt).toLocaleString()}</div>
+              <div><strong>Solved:</strong> {new Date(item.updatedAt).toLocaleString()}</div>
+            </div>
           </div>
         ))}
       </div>

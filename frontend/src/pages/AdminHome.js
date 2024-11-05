@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './AdminHome.css'; 
 
@@ -9,7 +9,7 @@ const AdminHome = () => {
   const history = useHistory();
 
   useEffect(() => {
-    // Check if user is not logged in or doesn't have the 'citizen' role
+    // Check if user is not logged in or doesn't have the 'admin' role
     if (!user || user.role !== 'admin') {
       history.push('/login'); // Redirect to login page
     }
@@ -21,6 +21,7 @@ const AdminHome = () => {
     logout();
     setDropdownOpen(false);
   };
+
   const handleProfileUpdate = () => {
     history.push('/profile/update'); // Navigate to Profile Update page
     setDropdownOpen(false); // Close dropdown after navigation
@@ -64,8 +65,13 @@ const AdminHome = () => {
         </div>
         <div className="AdminHome-tile">
           <h2>Employee Management</h2>
-          <p>Register or Remove  employees to manage the city.</p>
+          <p>Register or Remove employees to manage the city.</p>
           <Link to="/register_employee" className="AdminHome-btn-secondary">Manage Employee</Link>
+        </div>
+        <div className="AdminHome-tile">
+          <h2>Archived Reports</h2>
+          <p>View and manage archived reports for city documentation.</p>
+          <Link to="/archived/reports" className="AdminHome-btn-secondary">View Archived Reports</Link>
         </div>
       </div>
     </div>

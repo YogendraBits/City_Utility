@@ -43,4 +43,4 @@ async function addUser(role, name, email, password) {
 }
 
 // Example usage
-addUser('admin', 'Yogendra Sharma', 'yogendra@admin1.com', 'yogendra@admin1.com');
+addUser('admin', 'John Doe', 'JohnDoe@admin.com', 'JohnDoe@admin.com');

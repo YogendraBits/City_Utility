@@ -12,6 +12,7 @@ import ReportForm from './components/ReportForm';
 import ReportList from './components/ReportList';
 import EmployeeManagement from './components/EmployeeManagement';
 import ProfileUpdate from './pages/ProfileUpdate';
+import HistoryReports from './pages/HistoryReports';
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ const AppRoutes = () => {
       <Route path="/submit-report" component={ReportForm} />
       <Route path="/my-reports" component={ReportList} />
       <Route path="/profile/update" component={ProfileUpdate} />
+      <Route path="/archived/reports" component={HistoryReports} />
     </Switch>
   );
 };

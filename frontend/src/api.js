@@ -230,3 +230,71 @@ export const sendEmail = async ({ to, subject, data }) => {
     throw new Error('Error sending email: ' + error.message);
   }
 };
+
+
+
+
+// Set up a base URL for API requests for history
+const API_URL_history = 'http://localhost:5006/api/history';
+
+export const createHistory = async (historyData) => {
+  const token = localStorage.getItem('token'); // Fetch token from local storage
+  const response = await axios.post(API_URL_history, historyData, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Set the token in the headers
+    },
+  });
+  return response.data;
+};
+
+// New function to get all history for admin dashboard
+export const getAllHistory = async () => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    const response = await axios.get(`${API_URL_history}/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data; // Return the full list of histories
+    } else {
+      throw new Error(`Error fetching histories: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error fetching histories:', error);
+    throw error;
+  }
+};
+
+
+export const getHistoryByUserId = async (userId) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  try {
+    const response = await axios.get(`${API_URL_history}/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data; // Return the history for the specified user
+    } else {
+      throw new Error(`Error fetching history for user ID ${userId}: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error(`Error fetching history for user ID ${userId}:`, error);
+    throw error;
+  }
+};

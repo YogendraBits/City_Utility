@@ -43,6 +43,7 @@ Admin Home : Where Admin Get Three Option
             - Add Employee  -> Where New Employee can be added and can be deleted.
             - Admin Panel   -> Where admin can see all reports and assign them to employee.
             - Announcements -> To create edit or delete announcements.
+            - Archived Reports -> Reports of which solution has been provided and been moved to Archived.
     
     All three are different web pages and user with admin role can access them.
 
@@ -185,6 +186,21 @@ To run on localhost using Docker
 docker build -t utility-reporting-service .
 docker run -d -p 5001:5001 --name utility-reporting-service utility-reporting-service
 
+
+## 7. history-service/
+
+Admin can archive the resolved/completed reports, on archiving reports will be deleted from utility-reporting-service and will be shifted to history-service database with important but limited information.
+
+```bash
+.env - Requires
+    MONGO_URI="Your mongo db connector api"
+    JWT_SECRET="your_jwt_secret"
+
+```bash
+Dockerfile - Container configuration.
+To run on localhost using Docker
+docker build -t history-service .
+docker run -d -p 5006:5006 --name history-service-container history-service
 
 
 ##Installation
