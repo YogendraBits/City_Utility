@@ -1,5 +1,8 @@
 require('dotenv').config(); // Load environment variables from .env
 const { MongoClient, ObjectId } = require('mongodb');
+const bcrypt = require('bcrypt'); // Import bcrypt
+
+const SALT_ROUNDS = 10; // Default salt rounds
 
 async function addUser(role, name, email, password) {
     // Get MongoDB URI from environment variables
@@ -13,13 +16,16 @@ async function addUser(role, name, email, password) {
         const database = client.db('test'); // Access the 'test' database
         const usersCollection = database.collection('users'); // Access the 'users' collection
 
+        // Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS); // Use the default salt rounds
+
         // Define the user document with all specified fields
         const user = {
             _id: new ObjectId(), // Generates a MongoDB ObjectId
             role: role,
             name: name,
             email: email,
-            password: password, // In a real app, hash this password
+            password: hashedPassword, // Store the hashed password
             createdAt: new Date(), // Current date for createdAt
             updatedAt: new Date(), // Current date for updatedAt
             __v: 0, // Initialize version field to 0
@@ -37,4 +43,4 @@ async function addUser(role, name, email, password) {
 }
 
 // Example usage
-addUser('admin', 'Yogendra Sharma', 'yogendra@admin.com', 'yogendra@admin.com');
+addUser('admin', 'Yogendra Sharma', 'yogendra@admin1.com', 'yogendra@admin1.com');

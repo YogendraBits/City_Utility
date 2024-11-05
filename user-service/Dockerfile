@@ -13,6 +13,10 @@ RUN npm install
 # Copy the rest of the application.
 COPY . .
 
+# Build native modules (if needed).
+# This step can be useful if you have native dependencies that need to be rebuilt.
+RUN npm rebuild bcrypt --build-from-source
+
 # Expose the port.
 EXPOSE 5000
 
