@@ -30,6 +30,7 @@ const ReportList = () => {
         setLoading(false);
         return;
       }
+      setError(null);
 
       try {
         console.log("Fetching reports and history for User ID:", user._id);
@@ -42,7 +43,7 @@ const ReportList = () => {
         setHistory(historyData);
       } catch (error) {
         console.error("Error fetching reports or history:", error);
-        setError("Failed to load reports or history.");
+        setError("Reports or History not found for the user.");
       } finally {
         setLoading(false);
       }
@@ -106,9 +107,20 @@ const ReportList = () => {
                 {report.description}
               </div>
             </div>
-            <button className="reportlist-delete-button" onClick={() => handleDeleteReport(report._id)}>
-              Delete
-            </button>
+            <button 
+                className="reportlist-delete-button" 
+                onClick={() => handleDeleteReport(report._id)} 
+                disabled={report.status === 'in-progress' || report.status === 'completed'}
+                title={report.status === 'in-progress' || report.status === 'completed' 
+                  ? `Cannot delete, report is ${report.status}` 
+                  : 'Once deleted, you will not be able to recover'}
+                style={{
+                  cursor: report.status === 'in-progress' || report.status === 'completed' ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Delete
+              </button>
+
           </div>
         ))}
       </div>
