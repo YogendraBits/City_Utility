@@ -1,6 +1,19 @@
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
+const API_URL_REPORTS = 'http://localhost:5001/api/reports';
+const API_URL_LOCATION = 'http://localhost:5002/api/location';
+const API_URL_public = 'http://localhost:5004/api/announcements';
+const API_URL_history = 'http://localhost:5006/api/history';
+const API_URL_email = 'http://localhost:5005/send-email';
+
+
+// const API_URL_REPORTS='http://192.168.1.8:5001/api/reports';
+// const API_URL_LOCATION='http://192.168.1.8:5002/api/location';
+// const API_URL_public='http://192.168.1.8:5004/api/announcements';
+// const API_URL_history='http://192.168.1.8:5006/api/history';
+// const API_URL_email='http://192.168.1.8:5005/send-email';
+
 
 // User Authentication
 export const registerUser = async (userData) => {
@@ -44,7 +57,7 @@ export const deleteUserById = async (userId) => {
 
 
 // Set up a base URL for API requests
-const API_URL_REPORTS = 'http://localhost:5001/api/reports'; // Utility Reporting Service
+// const API_URL_REPORTS = 'http://localhost:5001/api/reports'; // Utility Reporting Service
 
 
 // Utility Reporting Service
@@ -123,7 +136,7 @@ export const assignReportToEmployee = async (reportId, employeeId) => {
   return response.data;
 };
 
-const API_URL_LOCATION = 'http://localhost:5002/api/location'; // Location Service
+// const API_URL_LOCATION = 'http://localhost:5002/api/location'; // Location Service
 
 // Location Service that fetches location data
 export const getLocation = async (latitude, longitude) => {
@@ -180,7 +193,7 @@ export const updateReportStatus = async (reportId, status) => {
 };
 
 
-const API_URL_public = 'http://localhost:5004/api/announcements'; // Point this to your announcement microservice
+// const API_URL_public = 'http://localhost:5004/api/announcements'; // Point this to your announcement microservice
 
 // Fetch all announcements
 export const fetchAnnouncements = async () => {
@@ -218,9 +231,10 @@ export const deleteAnnouncement = async (announcementId, token) => {
 };
 
 
+// const API_URL_email = 'http://localhost:5005/send-email';
 export const sendEmail = async ({ to, subject, data }) => {
   try {
-    const response = await axios.post('http://localhost:5005/send-email', {
+    const response = await axios.post(API_URL_email, {
       to,
       subject,
       data
@@ -235,7 +249,7 @@ export const sendEmail = async ({ to, subject, data }) => {
 
 
 // Set up a base URL for API requests for history
-const API_URL_history = 'http://localhost:5006/api/history';
+// const API_URL_history = 'http://localhost:5006/api/history';
 
 export const createHistory = async (historyData) => {
   const token = localStorage.getItem('token'); // Fetch token from local storage

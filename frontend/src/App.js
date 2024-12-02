@@ -13,6 +13,8 @@ import ReportList from './components/ReportList';
 import EmployeeManagement from './components/EmployeeManagement';
 import ProfileUpdate from './pages/ProfileUpdate';
 import HistoryReports from './pages/HistoryReports';
+import AboutUs from './pages/AboutUs';
+import PrivacyPage from './pages/PrivacyPage';
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -31,6 +33,8 @@ const AppRoutes = () => {
       <Route path="/my-reports" component={ReportList} />
       <Route path="/profile/update" component={ProfileUpdate} />
       <Route path="/archived/reports" component={HistoryReports} />
+      <Route path="/about" component={AboutUs} />
+      <Route path="/privacy" component={PrivacyPage} />
     </Switch>
   );
 };

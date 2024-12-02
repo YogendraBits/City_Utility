@@ -50,9 +50,11 @@ const Home = () => {
           )}
         </div>
       </header>
+
       <section className="home-welcome-message">
         <p className="home-info-text">This is a reporting and information system for Pochinki City. Here, you can report utility issues and view community announcements.</p>
       </section>
+
       <div className="home-tile-container">
         <div className="home-tile">
           <h2>Report an Issue</h2>
@@ -70,6 +72,17 @@ const Home = () => {
           <Link to="/announcements" className="home-btn btn-secondary">View Announcements</Link>
         </div>
       </div>
+
+      {/* Informational Footer */}
+      <footer className="home-footer">
+        <div className="footer-content">
+          <p className="footer-text">© 2024 Pochinki City. All rights reserved.</p>
+          <div className="footer-links">
+            <a href="/about" className="footer-link">About Us</a>
+            <a href="/privacy" className="footer-link">Privacy Policy</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
