@@ -1,10 +1,52 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const retry = require('async-retry');
+const CircuitBreaker = require('opossum');
+const rateLimit = require('express-rate-limit');
+
+// Define a circuit breaker for database operations
+const dbCircuitBreaker = new CircuitBreaker(
+  async (operation) => {
+    return await retry(
+      async (bail) => {
+        try {
+          return await operation();
+        } catch (error) {
+          // Bail on non-recoverable errors
+          if (error.name === 'ValidationError') bail(error); // Bail on validation errors
+          throw error; // Retry for transient errors
+        }
+      },
+      { retries: 3, factor: 2 } // 3 retries with exponential backoff
+    );
+  },
+  {
+    timeout: 15000, // Timeout after 15 seconds
+    errorThresholdPercentage: 50, // Open circuit if 50% of requests fail
+    resetTimeout: 30000, // Try to close circuit after 30 seconds
+  }
+);
+
+// Log circuit breaker events
+dbCircuitBreaker.on('open', () => console.warn('Circuit breaker opened'));
+dbCircuitBreaker.on('halfOpen', () => console.info('Circuit breaker half-open'));
+dbCircuitBreaker.on('close', () => console.info('Circuit breaker closed'));
+
+// Rate limiting for registration and login routes
+const registerLoginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+});
 
 // Register a new user
 exports.registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -15,26 +57,33 @@ exports.registerUser = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Store the hashed password
-    const user = await User.create({ name, email, password: hashedPassword, role });
+    const createOperation = () => User.create([{ name, email, password: hashedPassword, role }], { session });
+
+    const user = await dbCircuitBreaker.fire(createOperation);
+
+    await session.commitTransaction(); // Commit transaction if user is created successfully
 
     res.status(201).json({
       user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        _id: user[0]._id,
+        name: user[0].name,
+        email: user[0].email,
+        role: user[0].role,
       }
     });
   } catch (error) {
-    console.error('Error during registration:', error); // Log the error for debugging
+    await session.abortTransaction(); // Rollback transaction if error occurs
+    console.error('Error during registration:', error);
     res.status(500).json({ message: 'Server error' });
+  } finally {
+    session.endSession();
   }
 };
 
 // User login
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -49,6 +98,7 @@ exports.loginUser = async (req, res) => {
 
     // Create and sign a JWT token
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     res.json({
       token,
       user: {
@@ -59,11 +109,10 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error during login:', error); // Log the error for debugging
+    console.error('Error during login:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 // Get all employees
 exports.getEmployees = async (req, res) => {
@@ -71,23 +120,20 @@ exports.getEmployees = async (req, res) => {
     const employees = await User.find({ role: 'employee' });
     res.status(200).json(employees);
   } catch (error) {
-    console.error('Error fetching employees:', error); // Log the error for debugging
+    console.error('Error fetching employees:', error);
     res.status(500).json({ message: 'Error fetching employees' });
   }
 };
 
-
+// Get user by ID
 exports.getUserById = async (req, res) => {
-  const userId = req.params.id; // assuming the _id is passed as a URL parameter
+  const userId = req.params.id;
 
   try {
-    // Find the user by _id
-    const user = await User.findById(userId).select('name email'); // select only name and email fields
-
+    const user = await User.findById(userId).select('name email');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching user:', error);
@@ -95,17 +141,26 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+// Update user details
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
   const { name, email, password } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const updates = {};
     if (name) updates.name = name;
     if (email) updates.email = email;
-    if (password) updates.password = password; // Store password directly
+    if (password) updates.password = await bcrypt.hash(password, 10); // Hash password if updating
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true });
+    const updateOperation = () =>
+      User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true, session });
+
+    const updatedUser = await dbCircuitBreaker.fire(updateOperation);
+
+    await session.commitTransaction();
 
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -120,18 +175,27 @@ exports.updateUser = async (req, res) => {
       }
     });
   } catch (error) {
+    await session.abortTransaction();
     console.error('Error updating user:', error);
     res.status(500).json({ message: 'Server error' });
+  } finally {
+    session.endSession();
   }
 };
 
-
 // Delete a user by ID
 exports.deleteUser = async (req, res) => {
-  const userId = req.params.id; // assuming the _id is passed as a URL parameter
+  const userId = req.params.id;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
-    const deletedUser = await User.findByIdAndDelete(userId);
+    const deleteOperation = () => User.findByIdAndDelete(userId, { session });
+
+    const deletedUser = await dbCircuitBreaker.fire(deleteOperation);
+
+    await session.commitTransaction();
 
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -139,7 +203,21 @@ exports.deleteUser = async (req, res) => {
 
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
+    await session.abortTransaction();
     console.error('Error deleting user:', error);
     res.status(500).json({ message: 'Server error' });
+  } finally {
+    session.endSession();
   }
+};
+
+// Health check route for monitoring circuit breaker status
+exports.getHealth = (req, res) => {
+  res.json({
+    circuitBreaker: {
+      open: dbCircuitBreaker.opened,
+      closed: !dbCircuitBreaker.opened,
+      stats: dbCircuitBreaker.stats,
+    },
+  });
 };
