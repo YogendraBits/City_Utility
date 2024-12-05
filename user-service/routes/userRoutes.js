@@ -23,9 +23,9 @@ const registerLoginRateLimiter = rateLimit({
 router.post('/register', registerLoginRateLimiter, registerUser);
 router.post('/login', registerLoginRateLimiter, loginUser);
 router.get('/employees', authMiddleware, getEmployees); // Only admin can fetch employees
-router.get('/:id', authMiddleware, getUserById);
-router.put('/:id', authMiddleware, updateUser);
-router.delete('/:id', authMiddleware, deleteUser);
+router.get('/:id', getUserById);
+router.put('/:id', updateUser);
+router.delete('/:id',deleteUser);
 
 // Health check route
 router.get('/health', getHealth);
