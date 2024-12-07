@@ -38,15 +38,19 @@ This project is a multi-service web application designed to manage city utilitie
     * Manage Reports
     * Create/Edit/Delete Announcements
     * View Archived Reports
+
     
    > **Note** Admin only can be added via running 'node addAdmin.js' command from frontend folder. You can add multiple admins, but need to change in addAdmin.js file.
+
 
 * **Employee:**
     * View Assigned Reports
     * Update Report Status
     * View Announcements
 
+
     > **Note** Can be only added by admin.
+
 
 * **Profile Update:** All users can update their profile information.
 * **Account Deletion:** Only citizens can delete their accounts.
