@@ -13,14 +13,15 @@ This project is a multi-service web application designed to manage city utilitie
 **Project Structure**
 
 ```
-admin/
-email-service/
-frontend/
-location-service/
-public-info-service/
-user-service/
-utility-reporting-service/
-history-service/
+├── LICENSE
+├── README.md
+├── admin/
+├── email-service/
+├── frontend/
+├── location-service/
+├── public-info-service/
+├── user-service/
+├── utility-reporting-service/
 ```
 
 **Frontend**
@@ -37,10 +38,16 @@ history-service/
     * Manage Reports
     * Create/Edit/Delete Announcements
     * View Archived Reports
+    
+   > **Note** Admin only can be added via running 'node addAdmin.js' command from frontend folder. You can add multiple admins, but need to change in addAdmin.js file.
+
 * **Employee:**
     * View Assigned Reports
     * Update Report Status
     * View Announcements
+
+    > **Note** Can be only added by admin.
+
 * **Profile Update:** All users can update their profile information.
 * **Account Deletion:** Only citizens can delete their accounts.
 
@@ -62,10 +69,30 @@ history-service/
    ```
 2. **Environment Configuration:**
    - Configure environment variables in `.env` files for each service.
+   
    Frontend .env requires:
    ```bash
     REACT_APP_API_URL=http://localhost:5000/api/users
    ```
+
+   User, admin,public-info,utility-reporting,history  service .env requires:
+   ```bash
+    MONGO_URI="Your mongo db connector api"
+    JWT_SECRET="your_jwt_secret"
+   ```
+
+    Email service .env requires:
+   ```bash
+    PORT=5005
+    MAILJET_API_KEY="your key"
+    MAILJET_API_SECRET="your key"
+   ```
+
+   Location .env requires:
+   ```bash
+    OPENCAGE_API_KEY="your opencage api key"
+   ```
+
 3. **Install Dependencies:**
    ```bash
    cd <service-directory>
@@ -84,6 +111,42 @@ history-service/
     docker run -d -p 3000:3000 --name frontend frontend
    ```
 
+    User service:
+    ```bash
+    docker build -t user-service .
+    docker run -d -p 5000:5000 --name user-service user-service
+   ```
+
+   Email service:
+   ```bash
+    docker build -t email-service .
+    docker run -d -p 5005:5005 --name email-service-container email-service
+   ```
+
+   Location service:
+   ```bash
+    docker build -t location-service .
+    docker run -d -p 5002:5002 --name location-service location-service
+   ```
+
+   Public-Info service:
+   ```bash
+    docker build -t public-info-service .
+    docker run -d -p 5004:5004 --name public-info-service-container public-info-service
+   ```
+
+    Utility-reporting service:
+   ```bash
+    docker build -t utility-reporting-service .
+    docker run -d -p 5001:5001 --name utility-reporting-service utility-reporting-service
+   ```
+
+   History  service:
+   ```bash
+    docker build -t history-service .
+    docker run -d -p 5006:5006 --name history-service-container history-service
+   ```
+
    (If you want to change port for the specific microservice change it in the docker file of that microservice and also in the api.js and .env file of the frontend)
 
 **Usage**
@@ -100,4 +163,6 @@ http://localhost:3000/
 * **Testing:** Write unit and integration tests to ensure code quality and reliability.
 * **Deployment:** Consider using container orchestration tools like Kubernetes for deployment and scaling.
 
-By following these steps, you can deploy and run the City Utility microservice project locally.
+By following these steps, you can deploy and run the City Utility microservice project.
+
+Happy coding!!
