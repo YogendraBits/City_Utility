@@ -62,6 +62,10 @@ history-service/
    ```
 2. **Environment Configuration:**
    - Configure environment variables in `.env` files for each service.
+   Frontend .env requires:
+   ```bash
+    REACT_APP_API_URL=http://localhost:5000/api/users
+   ```
 3. **Install Dependencies:**
    ```bash
    cd <service-directory>
@@ -73,7 +77,14 @@ history-service/
    docker build -t <service-name> .
    docker run -d -p <port>:<port> --name <service-name> <service-name>
    ```
-   (Refer to the specific instructions in each service directory for port numbers and service names.)
+
+   Frontend:
+   ```bash
+    docker build -t frontend .
+    docker run -d -p 3000:3000 --name frontend frontend
+   ```
+
+   (If you want to change port for the specific microservice change it in the docker file of that microservice and also in the api.js and .env file of the frontend)
 
 **Usage**
 
