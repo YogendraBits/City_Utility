@@ -8,11 +8,11 @@ const API_URL_history = 'http://localhost:5006/api/history';
 const API_URL_email = 'http://localhost:5005/send-email';
 
 
-// const API_URL_REPORTS='http://192.168.1.8:5001/api/reports';
-// const API_URL_LOCATION='http://192.168.1.8:5002/api/location';
-// const API_URL_public='http://192.168.1.8:5004/api/announcements';
-// const API_URL_history='http://192.168.1.8:5006/api/history';
-// const API_URL_email='http://192.168.1.8:5005/send-email';
+// const API_URL_REPORTS='http://10.52.108.110:5001/api/reports';
+// const API_URL_LOCATION='http://10.52.108.110:5002/api/location';
+// const API_URL_public='http://10.52.108.110:5004/api/announcements';
+// const API_URL_history='http://10.52.108.110:5006/api/history';
+// const API_URL_email='http://10.52.108.110:5005/send-email';
 
 
 // User Authentication
